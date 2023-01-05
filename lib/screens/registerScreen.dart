@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:y/providers/authProvider.dart';
 
 // Define a custom Form widget.
@@ -83,15 +84,17 @@ class RegisterScreenState extends State<RegisterScreen> {
                 },
               ),
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   if (_formKey.currentState!.validate()) {
+                    AuthProvider auth = AuthProvider();
+                    await auth.register(nameController.text, phoneNumberController.text, passwordController.text, confirmPasswordController.text);
+                    if (!mounted) return;
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                        content: Text('Registering'),
+                        content: Text('Registered, log in to continue'),
                       ),
                     );
-                    AuthProvider auth = AuthProvider();
-                    auth.register(nameController.text, phoneNumberController.text, passwordController.text, confirmPasswordController.text);
+                    context.pop();
                   }
                 },
                 child: const Text('Register'),
