@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:y/providers/authProvider.dart';
+import 'package:y/utility/routes.dart';
 
 // Define a custom Form widget.
 class LoginScreen extends StatefulWidget {
@@ -69,7 +70,7 @@ class LoginScreenState extends State<LoginScreen> {
               ),
               TextButton(
                 onPressed: () {
-                  context.go('/register');
+                  context.go(Routes.register.pageName);
                 },
                 child: Text('Register'),
               ),

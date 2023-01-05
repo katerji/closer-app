@@ -6,28 +6,20 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:y/screens/loginScreen.dart';
 import 'package:y/screens/registerScreen.dart';
+import 'package:y/utility/routes.dart';
 
-/// This sample app shows an app with two screens.
-///
-/// The first route '/' is mapped to [HomeScreen], and the second route
-/// '/details' is mapped to [DetailsScreen].
-///
-/// The buttons use context.go() to navigate to each destination. On mobile
-/// devices, each destination is deep-linkable and on the web, can be navigated
-/// to using the address bar.
 void main() => runApp(const MyApp());
 
-/// The route configuration.
 final GoRouter _router = GoRouter(
   routes: <RouteBase>[
     GoRoute(
-      path: '/',
+      path: Routes.home.pagePath,
       builder: (BuildContext context, GoRouterState state) {
         return const LoginScreen();
       },
       routes: <RouteBase>[
         GoRoute(
-          path: 'register',
+          path: Routes.register.pagePath,
           builder: (BuildContext context, GoRouterState state) {
             return const RegisterScreen();
           },
@@ -37,9 +29,7 @@ final GoRouter _router = GoRouter(
   ],
 );
 
-/// The main app.
 class MyApp extends StatelessWidget {
-  /// Constructs a [MyApp]
   const MyApp({Key? key}) : super(key: key);
 
   @override
