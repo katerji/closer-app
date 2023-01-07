@@ -6,6 +6,7 @@ import 'package:y/providers/chat_provider.dart';
 import 'package:y/utility/routes.dart';
 
 import '../models/chat.dart';
+import '../widgets/chats_widget.dart';
 
 class ChatsScreen extends StatefulWidget {
   const ChatsScreen({super.key});
@@ -30,16 +31,15 @@ class ChatsScreenState extends State<ChatsScreen> {
 
   void _logout() async {
     context.read<AuthProvider>().logout();
-    // if (!mounted) return;
-    // context.go(Routes.login.pageName);
   }
 
   @override
   Widget build(BuildContext context) {
-    // context.read<ChatsProvider>().fetchChats();
     return Scaffold(
       floatingActionButton: ElevatedButton(
-        onPressed: () {},
+        onPressed: () {
+          context.push(Routes.contacts.pageName);
+        },
         child: Icon(Icons.add, color: Colors.white),
         style: ElevatedButton.styleFrom(
           shape: CircleBorder(),
@@ -61,38 +61,8 @@ class ChatsScreenState extends State<ChatsScreen> {
         ],
       ),
       body: Center(
-        child: Column(
-          children: [
-            Row(
-              children: [
-                Icon(Icons.add),
-                Text('Add chat'),
-              ],
-            ),
-            getChats(),
-          ],
-        ),
+        child: const ChatsWidget(),
       ),
     );
-  }
-
-  Widget getChats() {
-    List<Chat>? chats = chatsProvider!.getChats();
-    if (chats == null) {
-      return SizedBox.shrink();
-    }
-    return Column(
-        children: chats.map(
-      (chat) {
-        return Row(
-          children: [
-            Text(chat.name ?? "No name"),
-            Text(
-              chat.id.toString(),
-            ),
-          ],
-        );
-      },
-    ).toList());
   }
 }

@@ -20,12 +20,9 @@ class ContactService {
     dynamic users = await Request.get(endpoint: Endpoints.getChats);
     if (users is RequestException) {
       return ContactsGetResponse(contacts: [], error: users.errorMessage);
-    } else if (users.length == 0) {
-      return ContactsGetResponse(contacts: [], error: users.errorMessage);
-    } else {
-      users = users.map((userJson) => User.fromJson(userJson));
-      return ContactsGetResponse(contacts: users);
     }
+    users = users.map<User>((user) => User.fromJson(user)).toList();
+    return ContactsGetResponse(contacts: users);
   }
 
   Future<GenericResponse> sendInvitation(String phoneNumber) async {

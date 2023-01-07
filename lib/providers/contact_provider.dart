@@ -10,6 +10,7 @@ import '../network/responses/invitations_get_response.dart';
 class ContactProvider extends ChangeNotifier {
   List<User> _sentInvitations = [];
   List<User> _receivedInvitations = [];
+  List<User> _contacts = [];
   ApiRequestLoader contactsGetRequestLoader = ApiRequestLoader();
   ApiRequestLoader invitationsGetRequestLoader = ApiRequestLoader();
   ApiRequestLoader sendInvitationRequestLoader = ApiRequestLoader();
@@ -17,11 +18,17 @@ class ContactProvider extends ChangeNotifier {
   final Map<int, ApiRequestLoader> invitationsAcceptRequestLoader = {};
   final Map<int, ApiRequestLoader> invitationsRejectRequestLoader = {};
   final Map<int, ApiRequestLoader> sentInvitationsDeleteRequestLoader = {};
-  List<User> _contacts = [];
 
-  Future<void> getContacts() async {
+   bool _didFetchContacts = false;
+   bool _didFetchInvitations = false;
+
+
+  Future<void> fetchContacts({bool forceFetch = false}) async {
+    if (_didFetchContacts && !forceFetch) {
+      return;
+    }
+    _didFetchContacts = true;
     contactsGetRequestLoader.setLoading(true);
-
     ContactsGetResponse response = await contactService.getAll();
     if (response.error != null) {
       notifyListeners();
@@ -81,7 +88,11 @@ class ContactProvider extends ChangeNotifier {
     return;
   }
 
-  Future<void> getInvitations() async {
+  Future<void> fetchInvitations({bool forceFetch = false}) async {
+    if (_didFetchInvitations && !forceFetch) {
+      return;
+    }
+    _didFetchInvitations = true;
     invitationsGetRequestLoader.setLoading(true);
     InvitationsGetResponse response = await contactService.getAllInvitations();
     if (response.error != null) {

@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:y/providers/auth_provider.dart';
 import 'package:y/screens/chats_screen.dart';
+import 'package:y/screens/contacts_screen.dart';
 import 'package:y/screens/login_screen.dart';
 import 'package:y/screens/register_screen.dart';
 import 'package:y/screens/splash_screen.dart';
@@ -58,6 +59,12 @@ class AppState extends State<App> {
                 path: Routes.register.pagePath,
                 builder: (BuildContext context, GoRouterState state) {
                   return const RegisterScreen();
+                },
+              ),
+              GoRoute(
+                path: Routes.contacts.pagePath,
+                builder: (BuildContext context, GoRouterState state) {
+                  return const ContactsScreen();
                 },
               ),
             ],

@@ -14,12 +14,10 @@ class ChatService {
   ChatService._internal();
 
   Future<ChatsGetResponse> getAll() async {
-    dynamic chats = await Request.get(endpoint: Endpoints.getChats);
-    if (chats is RequestException) {
-      return ChatsGetResponse(chats: [], error: chats.errorMessage);
+    dynamic response = await Request.get(endpoint: Endpoints.getChats);
+    if (response is RequestException) {
+      return ChatsGetResponse(chats: [], error: response.errorMessage);
     }
-    return chats.map(
-      (chatJson) => Chat.fromJson(chatJson),
-    );
+    return ChatsGetResponse(chats: response.map<Chat>((chat) => Chat.fromJson(chat)).toList());
   }
 }
