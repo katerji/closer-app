@@ -1,0 +1,4 @@
+enum InvitationActions {
+  accept,
+  reject,
+}

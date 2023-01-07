@@ -16,4 +16,12 @@ class User {
       name: json['name'],
     );
   }
+
+  factory User.empty() {
+    return const User(
+      userId: 0,
+      phoneNumber: "",
+      name: ""
+    );
+  }
 }

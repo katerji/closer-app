@@ -2,12 +2,14 @@ import 'dart:convert';
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:y/network/responses/generic_response.dart';
 import 'package:y/services/auth_service.dart';
 import 'package:y/utility/constants.dart';
-import 'package:y/utility/endpoints.dart';
-import 'package:y/utility/request.dart';
+import 'package:y/network/endpoints.dart';
+import 'package:y/network/request.dart';
 
 import '../models/user.dart';
+import '../network/responses/login_response.dart';
 
 class AuthProvider extends ChangeNotifier {
   User? _currentUser;
@@ -30,7 +32,7 @@ class AuthProvider extends ChangeNotifier {
       return;
     }
     Map<String, dynamic> userLoginInfo = {
-      "phone": phoneNumber,
+      "phone_number": phoneNumber,
       "password": password
     };
     FlutterSecureStorage storage = const FlutterSecureStorage();
@@ -47,7 +49,7 @@ class AuthProvider extends ChangeNotifier {
   Future<bool> register(String name, String phoneNumber, String password,
       String confirmPassword) async {
     AuthService authService = AuthService();
-    RegisterResponse registerResponse = await authService.register(
+    GenericResponse registerResponse = await authService.register(
         phoneNumber: phoneNumber,
         name: name,
         password: password,
@@ -72,7 +74,9 @@ class AuthProvider extends ChangeNotifier {
       return;
     }
     Map<dynamic, dynamic> userLoginInfoMap = jsonDecode(userLoginInfoStr);
-    await login(userLoginInfoMap['phone_number'], userLoginInfoMap['password']);
+    if (userLoginInfoMap["phone_number"] != null && userLoginInfoMap["password"] != null) {
+      await login(userLoginInfoMap['phone_number'], userLoginInfoMap['password']);
+    }
     _isAuthing = false;
     notifyListeners();
   }
