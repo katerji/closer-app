@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:y/providers/authProvider.dart';
+import 'package:y/providers/auth_provider.dart';
 import 'package:y/utility/routes.dart';
 
 // Define a custom Form widget.
@@ -19,10 +19,10 @@ class LoginScreenState extends State<LoginScreen> {
   TextEditingController phoneNumberController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
-  late final AuthProvider authProvider;
+  AuthProvider? authProvider;
   @override
   void didChangeDependencies() {
-    authProvider = context.watch<AuthProvider>();
+    authProvider ??= context.read<AuthProvider>();
     super.didChangeDependencies();
   }
   @override
@@ -69,19 +69,18 @@ class LoginScreenState extends State<LoginScreen> {
                       ),
                     );
                   }
-                  await authProvider.login(
+                  authProvider!.login(
                       phoneNumberController.text, passwordController.text);
-                  if (!mounted) return;
-                  print("done");
-                  if (authProvider.isLoggedIn()) {
-                    context.go('/');
-                  }
+                  // if (!mounted) return;
+                  // if (authProvider.isLoggedIn()) {
+                  //   context.go(Routes.chats.pageName);
+                  // }
                 },
                 child: const Text('Login'),
               ),
               TextButton(
                 onPressed: () {
-                  context.go(Routes.register.pageName);
+                  context.push(Routes.register.pageName);
                 },
                 child: Text('Register'),
               ),

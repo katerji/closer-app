@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:y/providers/authProvider.dart';
-import 'package:y/screens/chatsScreen.dart';
-import 'package:y/screens/loginScreen.dart';
-import 'package:y/screens/registerScreen.dart';
+import 'package:y/providers/auth_provider.dart';
+import 'package:y/screens/chats_screen.dart';
+import 'package:y/screens/login_screen.dart';
+import 'package:y/screens/register_screen.dart';
+import 'package:y/screens/splash_screen.dart';
 import 'package:y/utility/routes.dart';
 
 class App extends StatefulWidget {
@@ -29,18 +30,22 @@ class AppState extends State<App> {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       routerConfig: GoRouter(
+        redirect: (context, state) {
+          final loggedIn = authProvider?.isLoggedIn();
+          if (!loggedIn!) {
+            String currentPage = state.location;
+            if (Routes.allowedRoutesWithoutAuthentication.contains(currentPage)) {
+              return null;
+            }
+            return Routes.login.pageName;
+          }
+          return null;
+        },
         routes: <RouteBase>[
           GoRoute(
             path: Routes.chats.pagePath,
             builder: (BuildContext context, GoRouterState state) {
               return const ChatsScreen();
-            },
-            redirect: (context, state) {
-              final loggedIn = authProvider?.isLoggedIn();
-              final loggingIn = state.subloc == '/login';
-              if (!loggedIn!) return loggingIn ? null : Routes.login.pageName;
-              if (loggingIn) return '/';
-              return null;
             },
             routes: <RouteBase>[
               GoRoute(

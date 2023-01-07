@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:y/providers/authProvider.dart';
-import 'package:y/providers/chatsProvider.dart';
+import 'package:y/providers/auth_provider.dart';
+import 'package:y/providers/chats_provider.dart';
 import 'package:y/utility/routes.dart';
 
 import '../models/chat.dart';
@@ -17,17 +17,19 @@ class ChatsScreen extends StatefulWidget {
 }
 
 class ChatsScreenState extends State<ChatsScreen> {
-  late final ChatsProvider chatsProvider;
+  late final ChatsProvider? chatsProvider;
 
   @override
   void didChangeDependencies() {
     chatsProvider = context.watch<ChatsProvider>();
-    chatsProvider.fetchChats();
+    // chatsProvider.fetchChats();
     super.didChangeDependencies();
   }
 
-  void _logout() {
+  void _logout() async {
     context.read<AuthProvider>().logout();
+    // if (!mounted) return;
+    // context.go(Routes.login.pageName);
   }
 
   @override
@@ -39,7 +41,7 @@ class ChatsScreenState extends State<ChatsScreen> {
         actions: <Widget>[
           TextButton(
             child: Text("logout"),
-            onPressed: () {},
+            onPressed: _logout,
             style: TextButton.styleFrom(
               foregroundColor: Colors.white,
             ),
@@ -63,7 +65,7 @@ class ChatsScreenState extends State<ChatsScreen> {
   }
 
   Widget getChats() {
-    List<Chat>? chats = chatsProvider.getChats();
+    List<Chat>? chats = chatsProvider!.getChats();
     if (chats == null) {
       return SizedBox.shrink();
     }

@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class Request {
-  static const String _baseApiUrl = 'https://e313-31-215-92-21.eu.ngrok.io/';
+  static const String _baseApiUrl = 'https://888f-31-215-92-21.in.ngrok.io/';
   static const String _socketServerUrl = 'https://8315-31-215-92-21.in.ngrok.io/socket';
   static const String _apiUrl = '${_baseApiUrl}api/';
   static String? _jwtToken;
@@ -28,7 +28,7 @@ class Request {
   static Future postToApi(String endpoint, Map<String, dynamic> body) async {
     String url = _apiUrl + endpoint;
     String encodedBody = jsonEncode(body);
-    print(encodedBody);
+    // print(encodedBody);
     final response = await http.post(
       Uri.parse(url),
       body: encodedBody,

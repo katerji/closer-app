@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:y/providers/authProvider.dart';
+import 'package:y/providers/auth_provider.dart';
 
 // Define a custom Form widget.
 class RegisterScreen extends StatefulWidget {
