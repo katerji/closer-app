@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:y/providers/auth_provider.dart';
-import 'package:y/providers/chats_provider.dart';
+import 'package:y/providers/chat_provider.dart';
 import 'package:y/screens/splash_screen.dart';
 
 import 'app.dart';
@@ -9,7 +9,7 @@ import 'app.dart';
 void main() => runApp(
       MultiProvider(
         providers: [
-          ChangeNotifierProvider<ChatsProvider>(create: (_) => ChatsProvider()),
+          ChangeNotifierProvider<ChatProvider>(create: (_) => ChatProvider()),
           ChangeNotifierProvider<AuthProvider>(create: (_) => AuthProvider()),
         ],
         child: const MyApp(),

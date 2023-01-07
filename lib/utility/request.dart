@@ -17,12 +17,11 @@ class Request {
     print(response.body);
     if (response.statusCode == 200) {
       return jsonDecode(response.body);
-    } else if (response.statusCode != 500) {
+    } else {
       String message =
           jsonDecode(response.body)['message'] ?? "Something went wrong";
       return RequestException(code: response.statusCode, message: message);
     }
-    throw Exception('Something went wrong');
   }
 
   static Future postToApi(String endpoint, Map<String, dynamic> body) async {
@@ -39,12 +38,11 @@ class Request {
     print(body);
     if (response.statusCode == 200) {
       return body;
-    } else if (response.statusCode != 500) {
+    } else {
       String message =
-          body['message'] ?? "Something went wrong";
+          body['error'] ?? "Something went wrong";
       return RequestException(code: response.statusCode, message: message);
     }
-    throw Exception('Something went wrong');
   }
 
   static Map<String, String> _getHeaders() {
