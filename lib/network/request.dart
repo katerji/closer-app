@@ -25,7 +25,7 @@ class Request {
       if (body is Map) {
         message = jsonDecode(response.body)['error'];
       }
-      return RequestException(code: response.statusCode, message: message);
+      return RequestException(code: response.statusCode, errorMessage: message);
     }
   }
 
@@ -47,7 +47,7 @@ class Request {
       return body;
     } else {
       String message = body?['error'] ?? "Something went wrong";
-      return RequestException(code: response.statusCode, message: message);
+      return RequestException(code: response.statusCode, errorMessage: message);
     }
   }
   static Future delete({required String endpoint, Map<String, dynamic>? body}) async {
@@ -68,7 +68,7 @@ class Request {
       return body;
     } else {
       String message = body?['error'] ?? "Something went wrong";
-      return RequestException(code: response.statusCode, message: message);
+      return RequestException(code: response.statusCode, errorMessage: message);
     }
   }
 
@@ -83,10 +83,10 @@ class Request {
 
 class RequestException {
   final int code;
-  final String message;
+  final String errorMessage;
 
   const RequestException({
     required this.code,
-    required this.message,
+    required this.errorMessage,
   });
 }

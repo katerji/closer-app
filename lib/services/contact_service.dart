@@ -19,23 +19,23 @@ class ContactService {
   Future<ContactsGetResponse> getAll() async {
     dynamic users = await Request.get(endpoint: Endpoints.getChats);
     if (users is RequestException) {
-      return ContactsGetResponse(contacts: [], error: users.message);
+      return ContactsGetResponse(contacts: [], error: users.errorMessage);
     } else if (users.length == 0) {
-      return ContactsGetResponse(contacts: [], error: users.message);
+      return ContactsGetResponse(contacts: [], error: users.errorMessage);
     } else {
       users = users.map((userJson) => User.fromJson(userJson));
       return ContactsGetResponse(contacts: users);
     }
   }
 
-  Future<bool> sendInvitation(String phoneNumber) async {
+  Future<GenericResponse> sendInvitation(String phoneNumber) async {
     dynamic response = await Request.post(
         endpoint: Endpoints.sendInvitation,
         body: {"phone_number": phoneNumber});
     if (response is RequestException) {
-      return false;
+      return GenericResponse(success: false, error: response.errorMessage);
     }
-    return response['success'];
+    return GenericResponse(success: true);
   }
 
   Future<InvitationsGetResponse> getAllInvitations() async {
@@ -44,7 +44,7 @@ class ContactService {
     );
     if (response is RequestException) {
       return InvitationsGetResponse(
-          error: response.message,
+          error: response.errorMessage,
           sentInvitations: [],
           receivedInvitations: []);
     }
@@ -70,7 +70,7 @@ class ContactService {
       );
     }
     if (response is RequestException) {
-      return GenericResponse(success: false, error: response.message);
+      return GenericResponse(success: false, error: response.errorMessage);
     }
     return GenericResponse(success: true);
   }
@@ -79,7 +79,7 @@ class ContactService {
     String endpoint = Endpoints.getDeleteSentInvitationEndpoint(userId);
     dynamic response = await Request.delete(endpoint: endpoint);
     if (response is RequestException) {
-      return GenericResponse(success: false, error: response.message);
+      return GenericResponse(success: false, error: response.errorMessage);
     }
     return GenericResponse(success: true);
   }

@@ -20,7 +20,7 @@ class AuthService {
         await Request.post(endpoint: Endpoints.login, body: body);
     if (response is RequestException) {
       return LoginResponse(
-          error: response.message, jwtToken: "", user: User.empty());
+          error: response.errorMessage, jwtToken: "", user: User.empty());
     } else {
       return LoginResponse(
           jwtToken: response['access_token'],
