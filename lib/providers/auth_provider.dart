@@ -2,10 +2,10 @@ import 'dart:convert';
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:y/network/api_request_loader.dart';
 import 'package:y/network/responses/generic_response.dart';
 import 'package:y/services/auth_service.dart';
 import 'package:y/utility/constants.dart';
-import 'package:y/network/endpoints.dart';
 import 'package:y/network/request.dart';
 
 import '../models/user.dart';
@@ -17,15 +17,20 @@ class AuthProvider extends ChangeNotifier {
   static bool _didAutoLogin = false;
 
   bool isAuthing() => _isAuthing;
-
   bool didAutoLogin() => _didAutoLogin;
 
   String? _loginError;
   String? _registrationError;
 
+  ApiRequestLoader loginRequestLoader = ApiRequestLoader();
+  ApiRequestLoader registerRequestLoader = ApiRequestLoader();
+
+
   Future<void> login(String phoneNumber, String password) async {
+    loginRequestLoader.setLoading(true);
     AuthService authService = AuthService();
     LoginResponse response = await authService.login(phoneNumber, password);
+    loginRequestLoader.setLoading(false);
     if (response.error != null) {
       _loginError = response.error;
       notifyListeners();
@@ -43,17 +48,20 @@ class AuthProvider extends ChangeNotifier {
     Request.setJwtToken(response.jwtToken ?? "");
     print(response.jwtToken ?? "");
     _currentUser = response.user;
+
     notifyListeners();
   }
 
   Future<bool> register(String name, String phoneNumber, String password,
       String confirmPassword) async {
+    registerRequestLoader.setLoading(true);
     AuthService authService = AuthService();
     GenericResponse registerResponse = await authService.register(
         phoneNumber: phoneNumber,
         name: name,
         password: password,
         confirmPassword: confirmPassword);
+    registerRequestLoader.setLoading(false);
     if (registerResponse.error != null) {
       _registrationError = registerResponse.error;
       notifyListeners();

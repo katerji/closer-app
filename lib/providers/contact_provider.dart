@@ -12,7 +12,11 @@ class ContactProvider extends ChangeNotifier {
   List<User> _receivedInvitations = [];
   ApiRequestLoader contactsGetRequestLoader = ApiRequestLoader();
   ApiRequestLoader invitationsGetRequestLoader = ApiRequestLoader();
+  ApiRequestLoader sendInvitationRequestLoader = ApiRequestLoader();
   ContactService contactService = ContactService();
+  final Map<int, ApiRequestLoader> invitationsAcceptRequestLoader = {};
+  final Map<int, ApiRequestLoader> invitationsRejectRequestLoader = {};
+  final Map<int, ApiRequestLoader> sentInvitationsDeleteRequestLoader = {};
   List<User> _contacts = [];
 
   Future<void> getContacts() async {
@@ -29,19 +33,32 @@ class ContactProvider extends ChangeNotifier {
   }
 
   Future<void> sendInvitation(String phoneNumber) async {
-    GenericResponse response =
-    await contactService.sendInvitation(phoneNumber);
+    sendInvitationRequestLoader.setLoading(true);
+    GenericResponse response = await contactService.sendInvitation(phoneNumber);
     if (response.error != null) {
       notifyListeners();
       return;
     }
+    sendInvitationRequestLoader.setLoading(false);
     notifyListeners();
     return;
   }
 
   Future<void> updateInvitation(int userId, InvitationActions action) async {
+    if (action == InvitationActions.accept) {
+      invitationsAcceptRequestLoader[userId] = ApiRequestLoader();
+      invitationsAcceptRequestLoader[userId]?.setLoading(true);
+    } else {
+      invitationsRejectRequestLoader[userId] = ApiRequestLoader();
+      invitationsRejectRequestLoader[userId]?.setLoading(true);
+    }
     GenericResponse response =
         await contactService.updateInvitation(userId, action);
+    if (action == InvitationActions.accept) {
+      invitationsAcceptRequestLoader[userId]?.setLoading(false);
+    } else {
+      invitationsRejectRequestLoader[userId]?.setLoading(false);
+    }
     if (response.error != null) {
       notifyListeners();
       return;
@@ -51,12 +68,15 @@ class ContactProvider extends ChangeNotifier {
   }
 
   Future<void> deleteSentInvitation(int userId) async {
+    sentInvitationsDeleteRequestLoader[userId] = ApiRequestLoader();
+    sentInvitationsDeleteRequestLoader[userId]?.setLoading(true);
     GenericResponse response =
         await contactService.deleteSentInvitation(userId);
     if (response.error != null) {
       notifyListeners();
       return;
     }
+    sentInvitationsDeleteRequestLoader[userId]?.setLoading(false);
     notifyListeners();
     return;
   }
