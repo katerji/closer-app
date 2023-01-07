@@ -4,41 +4,31 @@
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:y/screens/loginScreen.dart';
-import 'package:y/screens/registerScreen.dart';
-import 'package:y/utility/routes.dart';
+import 'package:provider/provider.dart';
+import 'package:y/providers/authProvider.dart';
+import 'package:y/providers/chatsProvider.dart';
 
-void main() => runApp(const MyApp());
+import 'app.dart';
 
-final GoRouter _router = GoRouter(
-  routes: <RouteBase>[
-    GoRoute(
-      path: Routes.home.pagePath,
-      builder: (BuildContext context, GoRouterState state) {
-        return const LoginScreen();
-      },
-      routes: <RouteBase>[
-        GoRoute(
-          path: Routes.register.pagePath,
-          builder: (BuildContext context, GoRouterState state) {
-            return const RegisterScreen();
-          },
-        ),
-      ],
-    ),
-  ],
-);
+void main() => runApp(
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider<ChatsProvider>(create: (_) => ChatsProvider()),
+          ChangeNotifierProvider<AuthProvider>(create: (_) => AuthProvider()),
+        ],
+        child: MyApp(),
+      ),
+    );
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      routerConfig: _router,
-    );
+    return const App();
   }
 }
+
 //
 // /// The home screen
 // class HomeScreen extends StatelessWidget {

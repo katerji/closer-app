@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:y/providers/authProvider.dart';
 import 'package:y/utility/routes.dart';
 
@@ -18,6 +19,12 @@ class LoginScreenState extends State<LoginScreen> {
   TextEditingController phoneNumberController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
+  late final AuthProvider authProvider;
+  @override
+  void didChangeDependencies() {
+    authProvider = context.watch<AuthProvider>();
+    super.didChangeDependencies();
+  }
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -54,7 +61,7 @@ class LoginScreenState extends State<LoginScreen> {
                 },
               ),
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   if (_formKey.currentState!.validate()) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
@@ -62,9 +69,13 @@ class LoginScreenState extends State<LoginScreen> {
                       ),
                     );
                   }
-                  AuthProvider authProvider = AuthProvider();
-                  authProvider.login(
+                  await authProvider.login(
                       phoneNumberController.text, passwordController.text);
+                  if (!mounted) return;
+                  print("done");
+                  if (authProvider.isLoggedIn()) {
+                    context.go('/');
+                  }
                 },
                 child: const Text('Login'),
               ),
