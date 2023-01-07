@@ -43,12 +43,10 @@ class ContactService {
       return InvitationsGetResponse(
           error: response.errorMessage,
           sentInvitations: [],
-          receivedInvitations: []);
+          receivedInvitations: [],);
     }
-    List<User> sentInvitations = response['sent_invitations']
-        .map((invitation) => User.fromJson(invitation));
-    List<User> receivedInvitations = response['received_invitations']
-        .map((invitation) => User.fromJson(invitation));
+    List<User> sentInvitations = response['sent_invitations'].map<User>((user) => User.fromJson(user)).toList();
+    List<User> receivedInvitations = response['received_invitations'].map<User>((user) => User.fromJson(user)).toList();
     return InvitationsGetResponse(
         sentInvitations: sentInvitations,
         receivedInvitations: receivedInvitations);

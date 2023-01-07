@@ -52,6 +52,15 @@ class ChatsScreenState extends State<ChatsScreen> {
         title: Text("Chats"),
         actions: <Widget>[
           TextButton(
+            child: Text("Invitations"),
+            onPressed: () {
+              context.push(Routes.invitations.pageName);
+            },
+            style: TextButton.styleFrom(
+              foregroundColor: Colors.white,
+            ),
+          ),
+          TextButton(
             child: Text("logout"),
             onPressed: _logout,
             style: TextButton.styleFrom(
@@ -60,9 +69,7 @@ class ChatsScreenState extends State<ChatsScreen> {
           ),
         ],
       ),
-      body: Center(
-        child: const ChatsWidget(),
-      ),
+      body: const ChatsWidget(),
     );
   }
 }
