@@ -9,6 +9,11 @@ class ContactRowWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox.shrink();
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+      Text(contact.name),
+      Text(contact.phoneNumber)
+    ],);
   }
 }

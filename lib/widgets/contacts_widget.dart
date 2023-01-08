@@ -25,9 +25,7 @@ class _ContactsWidgetState extends State<ContactsWidget> {
   @override
   Widget build(BuildContext context) {
     return ListView(
-      children: _contactProvider == null
-          ? [const SizedBox.shrink()]
-          : _contactProvider!
+      children: _contactProvider!
           .contacts()
           .map(
             (User user) => ContactRowWidget(

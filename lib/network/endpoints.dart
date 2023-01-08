@@ -2,6 +2,7 @@ class Endpoints {
   static const login = 'auth/login';
   static const register = 'auth/register';
   static const getChats = 'chats';
+  static const getContacts = 'contacts';
   static const sendInvitation = 'invitation';
   static const getInvitations = 'invitations';
 

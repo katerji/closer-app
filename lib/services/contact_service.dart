@@ -17,11 +17,11 @@ class ContactService {
   ContactService._internal();
 
   Future<ContactsGetResponse> getAll() async {
-    dynamic users = await Request.get(endpoint: Endpoints.getChats);
-    if (users is RequestException) {
-      return ContactsGetResponse(contacts: [], error: users.errorMessage);
+    dynamic response = await Request.get(endpoint: Endpoints.getContacts);
+    if (response is RequestException) {
+      return ContactsGetResponse(contacts: [], error: response.errorMessage);
     }
-    users = users.map<User>((user) => User.fromJson(user)).toList();
+    List<User> users = response.map<User>((user) => User.fromJson(user)).toList();
     return ContactsGetResponse(contacts: users);
   }
 

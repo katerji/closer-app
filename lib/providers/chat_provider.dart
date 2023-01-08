@@ -22,7 +22,6 @@ class ChatProvider extends ChangeNotifier {
       return;
     }
     _chats = response.chats;
-    print(_chats);
     chatsRequestLoader.setLoading(false);
     notifyListeners();
   }
