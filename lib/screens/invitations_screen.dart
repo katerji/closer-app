@@ -32,14 +32,14 @@ class _InvitationsScreenState extends State<InvitationsScreen> {
         children: [
           Container(
             height: 100,
-            child: _contactProvider!.sentInvitations().isNotEmpty
+            child: _contactProvider!.receivedInvitations().isNotEmpty
                 ? ListView(
               children: _contactProvider!
-                  .sentInvitations()
+                  .receivedInvitations()
                   .map<InvitationWidget>(
                     (user) => InvitationWidget(
                   user: user,
-                  invitationType: InvitationType.sent,
+                  invitationType: InvitationType.received,
                 ),
               )
                   .toList(),
@@ -49,14 +49,14 @@ class _InvitationsScreenState extends State<InvitationsScreen> {
           Text("Sent"),
           Container(
             height: 100,
-            child: _contactProvider!.receivedInvitations().isNotEmpty
+            child: _contactProvider!.sentInvitations().isNotEmpty
                 ? ListView(
               children: _contactProvider!
-                  .receivedInvitations()
+                  .sentInvitations()
                   .map<InvitationWidget>(
                     (user) => InvitationWidget(
                   user: user,
-                  invitationType: InvitationType.received,
+                  invitationType: InvitationType.sent,
                 ),
               )
                   .toList(),

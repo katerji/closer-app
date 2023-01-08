@@ -31,11 +31,11 @@ class InvitationWidget extends StatelessWidget {
           onPressed: () {
             context
                 .read<ContactProvider>()
-                .updateInvitation(user.userId, InvitationActions.accept);
+                .deleteSentInvitation(user.userId);
           },
           icon: Icon(
-            Icons.check,
-            color: Colors.green,
+            Icons.delete,
+            color: Colors.red,
           ),
         ),
         invitationType == InvitationType.received
@@ -43,11 +43,11 @@ class InvitationWidget extends StatelessWidget {
                 onPressed: () {
                   context
                       .read<ContactProvider>()
-                      .updateInvitation(user.userId, InvitationActions.reject);
+                      .updateInvitation(user.userId, InvitationActions.accept);
                 },
                 icon: Icon(
-                  Icons.delete,
-                  color: Colors.red,
+                  Icons.check,
+                  color: Colors.green,
                 ),
               )
             : SizedBox.shrink(),

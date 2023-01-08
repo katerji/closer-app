@@ -25,14 +25,26 @@ class ContactService {
     return ContactsGetResponse(contacts: users);
   }
 
-  Future<GenericResponse> sendInvitation(String phoneNumber) async {
+  Future<InvitationsGetResponse> sendInvitation(String phoneNumber) async {
     dynamic response = await Request.post(
         endpoint: Endpoints.sendInvitation,
         body: {"phone_number": phoneNumber});
     if (response is RequestException) {
-      return GenericResponse(success: false, error: response.errorMessage);
+      return InvitationsGetResponse(
+          sentInvitations: [],
+          receivedInvitations: [],
+          error: response.errorMessage);
     }
-    return GenericResponse(success: true);
+    List<User> sentInvitations = response['sent_invitations']
+        .map<User>((user) => User.fromJson(user))
+        .toList();
+    List<User> receivedInvitations = response['received_invitations']
+        .map<User>((user) => User.fromJson(user))
+        .toList();
+    return InvitationsGetResponse(
+      sentInvitations: sentInvitations,
+      receivedInvitations: receivedInvitations,
+    );
   }
 
   Future<InvitationsGetResponse> getAllInvitations() async {
@@ -41,18 +53,24 @@ class ContactService {
     );
     if (response is RequestException) {
       return InvitationsGetResponse(
-          error: response.errorMessage,
-          sentInvitations: [],
-          receivedInvitations: [],);
+        error: response.errorMessage,
+        sentInvitations: [],
+        receivedInvitations: [],
+      );
     }
-    List<User> sentInvitations = response['sent_invitations'].map<User>((user) => User.fromJson(user)).toList();
-    List<User> receivedInvitations = response['received_invitations'].map<User>((user) => User.fromJson(user)).toList();
+    List<User> sentInvitations = response['sent_invitations']
+        .map<User>((user) => User.fromJson(user))
+        .toList();
+    List<User> receivedInvitations = response['received_invitations']
+        .map<User>((user) => User.fromJson(user))
+        .toList();
     return InvitationsGetResponse(
-        sentInvitations: sentInvitations,
-        receivedInvitations: receivedInvitations);
+      sentInvitations: sentInvitations,
+      receivedInvitations: receivedInvitations,
+    );
   }
 
-  Future<GenericResponse> updateInvitation(
+  Future<InvitationsGetResponse> updateInvitation(
       int userId, InvitationActions action) async {
     late dynamic response;
     if (action == InvitationActions.accept) {
@@ -65,17 +83,41 @@ class ContactService {
       );
     }
     if (response is RequestException) {
-      return GenericResponse(success: false, error: response.errorMessage);
+      return InvitationsGetResponse(
+          sentInvitations: [],
+          receivedInvitations: [],
+          error: response.errorMessage);
     }
-    return GenericResponse(success: true);
+    List<User> sentInvitations = response['sent_invitations']
+        .map<User>((user) => User.fromJson(user))
+        .toList();
+    List<User> receivedInvitations = response['received_invitations']
+        .map<User>((user) => User.fromJson(user))
+        .toList();
+    return InvitationsGetResponse(
+      sentInvitations: sentInvitations,
+      receivedInvitations: receivedInvitations,
+    );
   }
 
-  Future<GenericResponse> deleteSentInvitation(int userId) async {
+  Future<InvitationsGetResponse> deleteSentInvitation(int userId) async {
     String endpoint = Endpoints.getDeleteSentInvitationEndpoint(userId);
     dynamic response = await Request.delete(endpoint: endpoint);
     if (response is RequestException) {
-      return GenericResponse(success: false, error: response.errorMessage);
+      return InvitationsGetResponse(
+          sentInvitations: [],
+          receivedInvitations: [],
+          error: response.errorMessage);
     }
-    return GenericResponse(success: true);
+    List<User> sentInvitations = response['sent_invitations']
+        .map<User>((user) => User.fromJson(user))
+        .toList();
+    List<User> receivedInvitations = response['received_invitations']
+        .map<User>((user) => User.fromJson(user))
+        .toList();
+    return InvitationsGetResponse(
+      sentInvitations: sentInvitations,
+      receivedInvitations: receivedInvitations,
+    );
   }
 }

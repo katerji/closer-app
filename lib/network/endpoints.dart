@@ -9,6 +9,6 @@ class Endpoints {
     return 'invitation/inviter/$id';
   }
   static getDeleteSentInvitationEndpoint(id) {
-    return '/invitation/user/$id';
+    return 'invitation/user/$id';
   }
 }

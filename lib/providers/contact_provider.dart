@@ -41,11 +41,12 @@ class ContactProvider extends ChangeNotifier {
 
   Future<void> sendInvitation(String phoneNumber) async {
     sendInvitationRequestLoader.setLoading(true);
-    GenericResponse response = await contactService.sendInvitation(phoneNumber);
+    InvitationsGetResponse response = await contactService.sendInvitation(phoneNumber);
     if (response.error != null) {
       notifyListeners();
       return;
     }
+    _setInvitationsFromResponse(response);
     sendInvitationRequestLoader.setLoading(false);
     notifyListeners();
     return;
@@ -59,7 +60,7 @@ class ContactProvider extends ChangeNotifier {
       invitationsRejectRequestLoader[userId] = ApiRequestLoader();
       invitationsRejectRequestLoader[userId]?.setLoading(true);
     }
-    GenericResponse response =
+    InvitationsGetResponse response =
         await contactService.updateInvitation(userId, action);
     if (action == InvitationActions.accept) {
       invitationsAcceptRequestLoader[userId]?.setLoading(false);
@@ -70,6 +71,7 @@ class ContactProvider extends ChangeNotifier {
       notifyListeners();
       return;
     }
+    _setInvitationsFromResponse(response);
     notifyListeners();
     return;
   }
@@ -77,13 +79,14 @@ class ContactProvider extends ChangeNotifier {
   Future<void> deleteSentInvitation(int userId) async {
     sentInvitationsDeleteRequestLoader[userId] = ApiRequestLoader();
     sentInvitationsDeleteRequestLoader[userId]?.setLoading(true);
-    GenericResponse response =
+    InvitationsGetResponse response =
         await contactService.deleteSentInvitation(userId);
     if (response.error != null) {
       notifyListeners();
       return;
     }
     sentInvitationsDeleteRequestLoader[userId]?.setLoading(false);
+    _setInvitationsFromResponse(response);
     notifyListeners();
     return;
   }
@@ -98,8 +101,7 @@ class ContactProvider extends ChangeNotifier {
     if (response.error != null) {
       return;
     }
-    _sentInvitations = response.sentInvitations;
-    _receivedInvitations = response.receivedInvitations;
+    _setInvitationsFromResponse(response);
     invitationsGetRequestLoader.setLoading(false);
     notifyListeners();
   }
@@ -109,4 +111,9 @@ class ContactProvider extends ChangeNotifier {
   List<User> receivedInvitations() => _receivedInvitations;
 
   List<User> contacts() => _contacts;
+
+  void _setInvitationsFromResponse(InvitationsGetResponse invitations) {
+    _sentInvitations = invitations.sentInvitations;
+    _receivedInvitations = invitations.receivedInvitations;
+  }
 }
