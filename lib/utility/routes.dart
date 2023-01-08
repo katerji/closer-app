@@ -1,5 +1,6 @@
 class Routes {
   static Route chats = const Route(pagePath: '/', pageName: '/');
+  static Route chat = const Route(pagePath: 'chat', pageName: '/chat');
   static Route contacts = const Route(pagePath: 'contacts', pageName: '/contacts');
   static Route invitations = const Route(pagePath: 'invitations', pageName: '/invitations');
   static Route login = const Route(pagePath: 'login', pageName: '/login');

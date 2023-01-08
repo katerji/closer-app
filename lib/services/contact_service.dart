@@ -1,6 +1,4 @@
-import 'package:y/network/responses/generic_response.dart';
-import 'package:y/utility/invitation_actions_enum.dart';
-
+import '../models/enums/invitation_actions_enum.dart';
 import '../models/user.dart';
 import '../network/endpoints.dart';
 import '../network/request.dart';

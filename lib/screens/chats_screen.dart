@@ -44,8 +44,7 @@ class ChatsScreenState extends State<ChatsScreen> {
         style: ElevatedButton.styleFrom(
           shape: CircleBorder(),
           padding: EdgeInsets.all(20),
-          backgroundColor: Colors.blue, // <-- Button color
-          // foregroundColor: Colors.red, // <-- Splash color
+          backgroundColor: Colors.blue,
         ),
       ),
       appBar: AppBar(

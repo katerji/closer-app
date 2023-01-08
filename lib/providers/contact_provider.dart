@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:y/network/api_request_loader.dart';
 import 'package:y/network/responses/contacts_get_response.dart';
 import 'package:y/services/contact_service.dart';
-import 'package:y/utility/invitation_actions_enum.dart';
+import '../models/enums/invitation_actions_enum.dart';
 import '../models/user.dart';
 import '../network/responses/generic_response.dart';
 import '../network/responses/invitations_get_response.dart';

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:y/providers/auth_provider.dart';
+import 'package:y/screens/chat_screen.dart';
 import 'package:y/screens/chats_screen.dart';
 import 'package:y/screens/contacts_screen.dart';
 import 'package:y/screens/invitations_screen.dart';
@@ -72,6 +73,12 @@ class AppState extends State<App> {
                 path: Routes.invitations.pagePath,
                 builder: (BuildContext context, GoRouterState state) {
                   return const InvitationsScreen();
+                },
+              ),
+              GoRoute(
+                path: Routes.chat.pagePath,
+                builder: (BuildContext context, GoRouterState state) {
+                  return const ChatScreen();
                 },
               ),
             ],

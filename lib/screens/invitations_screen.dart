@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:y/providers/contact_provider.dart';
-import 'package:y/utility/invitation_type_enum.dart';
 
+import '../models/enums/invitation_type_enum.dart';
 import '../widgets/invitation_widget.dart';
 
 class InvitationsScreen extends StatefulWidget {

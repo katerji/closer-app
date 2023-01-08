@@ -104,7 +104,7 @@ class AuthProvider extends ChangeNotifier {
 
 
   bool isLoggedIn() => _currentUser != null;
-
+  int get loggedInUserId => _currentUser!.userId;
   String? getLoginError() => _loginError;
 
   String? getRegistrationError() => _registrationError;

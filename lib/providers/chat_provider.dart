@@ -6,6 +6,7 @@ import 'package:y/services/chat_service.dart';
 
 class ChatProvider extends ChangeNotifier {
   List<Chat> _chats = [];
+  Chat? _currentChatScope;
   bool _didFetchChats = false;
   ApiRequestLoader chatsRequestLoader = ApiRequestLoader();
 
@@ -29,4 +30,11 @@ class ChatProvider extends ChangeNotifier {
   List<Chat> getChats() => _chats;
 
   bool didFetchChats() => _didFetchChats;
+
+  void setChatScope(Chat chat) {
+    _currentChatScope = chat;
+    notifyListeners();
+  }
+
+  Chat? get currentChatScope => _currentChatScope;
 }
