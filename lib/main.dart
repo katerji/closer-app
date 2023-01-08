@@ -5,16 +5,25 @@ import 'package:y/providers/chat_provider.dart';
 import 'package:y/providers/contact_provider.dart';
 import 'package:y/screens/splash_screen.dart';
 
-import 'app.dart';
-
 void main() => runApp(
-      MultiProvider(
-        providers: [
-          ChangeNotifierProvider<ChatProvider>(create: (_) => ChatProvider()),
-          ChangeNotifierProvider<AuthProvider>(create: (_) => AuthProvider()),
-          ChangeNotifierProvider<ContactProvider>(create: (_) => ContactProvider()),
-        ],
-        child: const MyApp(),
+      ChangeNotifierProvider(
+        create: (context) => AuthProvider(),
+        child: Consumer<AuthProvider>(
+          builder: (context, authProvider, child) {
+            return MultiProvider(
+              key: ObjectKey(authProvider.appKey),
+              providers: [
+                ChangeNotifierProvider<ChatProvider>(
+                  create: (_) => ChatProvider(),
+                ),
+                ChangeNotifierProvider<ContactProvider>(
+                  create: (_) => ContactProvider(),
+                ),
+              ],
+              child: const MyApp(),
+            );
+          },
+        ),
       ),
     );
 

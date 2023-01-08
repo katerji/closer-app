@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:y/network/api_request_loader.dart';
 import 'package:y/network/responses/generic_response.dart';
 import 'package:y/services/auth_service.dart';
@@ -15,7 +16,7 @@ class AuthProvider extends ChangeNotifier {
   User? _currentUser;
   static bool _isAuthing = true;
   static bool _didAutoLogin = false;
-
+  int appKey = DateTime.now().millisecondsSinceEpoch;
   bool isAuthing() => _isAuthing;
   bool didAutoLogin() => _didAutoLogin;
 
@@ -95,12 +96,32 @@ class AuthProvider extends ChangeNotifier {
     FlutterSecureStorage storage = FlutterSecureStorage();
     await storage.write(
         key: Constants.secureStorageUserLoginInfoKey, value: null);
+    _deleteCacheDir();
+    _deleteAppDir();
+    appKey = DateTime.now().millisecondsSinceEpoch;
     notifyListeners();
   }
+
 
   bool isLoggedIn() => _currentUser != null;
 
   String? getLoginError() => _loginError;
 
   String? getRegistrationError() => _registrationError;
+
+  Future<void> _deleteCacheDir() async {
+    final cacheDir = await getTemporaryDirectory();
+
+    if (cacheDir.existsSync()) {
+      cacheDir.deleteSync(recursive: true);
+    }
+  }
+
+  Future<void> _deleteAppDir() async {
+    final appDir = await getApplicationSupportDirectory();
+
+    if(appDir.existsSync()){
+      appDir.deleteSync(recursive: true);
+    }
+  }
 }
