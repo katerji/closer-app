@@ -11,7 +11,7 @@ void main() => runApp(
         child: Consumer<AuthProvider>(
           builder: (context, authProvider, child) {
             return MultiProvider(
-              key: ObjectKey(authProvider.appKey),
+              // key: ObjectKey(authProvider.appKey),
               providers: [
                 ChangeNotifierProvider<ChatProvider>(
                   create: (_) => ChatProvider(),

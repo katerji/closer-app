@@ -1,10 +1,11 @@
 import 'package:y/network/responses/generic_response.dart';
+import 'package:y/utility/constants.dart';
 
 import '../models/user.dart';
 import '../network/endpoints.dart';
 import '../network/request.dart';
 import '../network/responses/login_response.dart';
-
+import 'package:socket_io_client/socket_io_client.dart' as IO;
 class AuthService {
   static final AuthService _authService = AuthService._internal();
 

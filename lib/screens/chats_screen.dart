@@ -24,6 +24,7 @@ class ChatsScreenState extends State<ChatsScreen> {
   void didChangeDependencies() {
     chatsProvider ??= context.watch<ChatProvider>();
     if(!chatsProvider!.didFetchChats()) {
+      print("fetchig");
       chatsProvider!.fetchChats();
     }
     super.didChangeDependencies();

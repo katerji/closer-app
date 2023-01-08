@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:y/providers/auth_provider.dart';
+import 'package:y/providers/chat_provider.dart';
 import 'package:y/utility/routes.dart';
 
 // Define a custom Form widget.

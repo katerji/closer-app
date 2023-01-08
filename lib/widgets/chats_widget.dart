@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:y/providers/auth_provider.dart';
 import 'package:y/providers/chat_provider.dart';
+import 'package:y/services/socket_service.dart';
 
 import '../models/chat.dart';
 import 'chat_row_widget.dart';
@@ -19,6 +21,11 @@ class _ChatsWidgetState extends State<ChatsWidget> {
   void didChangeDependencies() {
     _chatProvider ??= context.watch<ChatProvider>();
     _chatProvider!.fetchChats();
+    if (context.watch<AuthProvider>().isLoggedIn()) {
+      SocketService socketService = SocketService();
+      socketService.connectToSocketServer(_chatProvider!);
+      _chatProvider!.setSocketService(socketService);
+    }
     super.didChangeDependencies();
   }
 

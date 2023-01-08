@@ -6,11 +6,13 @@ import 'package:path_provider/path_provider.dart';
 import 'package:y/network/api_request_loader.dart';
 import 'package:y/network/responses/generic_response.dart';
 import 'package:y/services/auth_service.dart';
+import 'package:y/services/socket_service.dart';
 import 'package:y/utility/constants.dart';
 import 'package:y/network/request.dart';
 
 import '../models/user.dart';
 import '../network/responses/login_response.dart';
+import 'chat_provider.dart';
 
 class AuthProvider extends ChangeNotifier {
   User? _currentUser;
@@ -49,7 +51,6 @@ class AuthProvider extends ChangeNotifier {
     Request.setJwtToken(response.jwtToken ?? "");
     print(response.jwtToken ?? "");
     _currentUser = response.user;
-
     notifyListeners();
   }
 

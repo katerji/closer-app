@@ -1,13 +1,13 @@
 import 'package:y/models/enums/message_type_enum.dart';
 
 class Message {
-  final int id;
+  final int? id;
   final String message;
   final MessageType type;
   final int senderId;
   final DateTime sentOn;
   Message({
-    required this.id,
+    this.id,
     required this.message,
     required this.type,
     required this.senderId,

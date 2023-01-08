@@ -2,15 +2,12 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class Request {
-  static const String _baseApiUrl = 'https://888f-31-215-92-21.in.ngrok.io/';
-  static const String _socketServerUrl =
-      'https://8315-31-215-92-21.in.ngrok.io/socket';
+  static const String _baseApiUrl = 'https://70d4-31-215-92-21.in.ngrok.io/';
   static const String _apiUrl = '${_baseApiUrl}api/';
-  static String? _jwtToken;
+  static String? jwtToken;
+  static void setJwtToken(String newJwtToken) => jwtToken = newJwtToken;
 
-  static void setJwtToken(String jwtToken) => _jwtToken = jwtToken;
-
-  static void removeJwtToken() => _jwtToken = null;
+  static void removeJwtToken() => jwtToken = null;
 
   static Future get({required String endpoint}) async {
     String url = _apiUrl + endpoint;
@@ -74,8 +71,8 @@ class Request {
 
   static Map<String, String> _getHeaders() {
     Map<String, String> headers = {'Content-Type': 'application/json'};
-    if (_jwtToken != null) {
-      headers['authorization'] = 'bearer $_jwtToken';
+    if (jwtToken != null) {
+      headers['authorization'] = 'bearer $jwtToken';
     }
     return headers;
   }
