@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:y/providers/auth_provider.dart';
 import 'package:y/providers/chat_provider.dart';
+import 'package:y/utility/constants.dart';
 import '../models/message.dart';
 import 'message_widget.dart';
 
@@ -60,8 +61,12 @@ class _ChatWidgetState extends State<ChatWidget> {
   }
 
   void _sendNewMessage() {
-    chatProvider!.sendNewMessage(
-        _messageController.text, context.read<AuthProvider>().loggedInUserId, );
+    if (chatProvider!.currentChatScopeId! > Constants.newChatIdMin) {
+     chatProvider!.sendNewMessageFromNewChat(_messageController.text, context.read<AuthProvider>().loggedInUser);
+    } else {
+      chatProvider!.sendNewMessage(
+          _messageController.text, context.read<AuthProvider>().loggedInUserId, );
+    }
     _messageController.text = "";
   }
 }

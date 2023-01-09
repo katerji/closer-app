@@ -10,7 +10,10 @@ import 'package:y/services/socket_service.dart';
 import 'package:y/utility/constants.dart';
 import 'dart:math';
 
+import '../models/user.dart';
 import '../network/responses/chat_get_response.dart';
+import '../network/sockets/socket_event_payloads/new_chat_socket_payload.dart';
+import '../network/sockets/socket_event_payloads/new_message_socket_payload.dart';
 
 class ChatProvider extends ChangeNotifier {
   Map<int, Chat> _chatsMap = {};
@@ -34,8 +37,8 @@ class ChatProvider extends ChangeNotifier {
     }
     for (var chat in response.chats) {
       {
-      _chatsMap[chat.id!] = chat;
-    }
+        _chatsMap[chat.id!] = chat;
+      }
     }
     chatsRequestLoader.setLoading(false);
     notifyListeners();
@@ -47,11 +50,11 @@ class ChatProvider extends ChangeNotifier {
 
   void setChatScope(int chatId) {
     _currentChatIdScope = chatId;
-
   }
 
   void setNewChatScope(Chat chat) {
-    int newChatInt = Constants.newChatIdMin + Random().nextInt(Constants.newChatIdMax - Constants.newChatIdMin);
+    int newChatInt = Constants.newChatIdMin +
+        Random().nextInt(Constants.newChatIdMax - Constants.newChatIdMin);
     _chatsMap[newChatInt] = chat;
     _currentChatIdScope = newChatInt;
     notifyListeners();
@@ -59,20 +62,48 @@ class ChatProvider extends ChangeNotifier {
 
   int? get currentChatIdScope => _currentChatIdScope;
 
-  void receiveNewMessage(dynamic data) {
-    data['created_at'] = DateTime.now().toString();
-    Message newMessage = Message.fromJson(data);
-    int chatId = data['chat_id'];
-    if (_chatsMap[chatId] == null) {
-      return receiveMessageFromNewChat(newMessage, chatId);
-    }
-    _chatsMap[chatId]!.messages.add(newMessage);
+  void receiveNewMessage(NewMessageSocketPayload payload) {
+    Message newMessage = Message(
+      message: payload.message,
+      type: payload.messageType,
+      senderId: payload.senderId,
+      sentOn: DateTime.now(),
+    );
+    _chatsMap[payload.chatId]!.messages.add(newMessage);
     notifyListeners();
   }
 
+  void sendNewMessageFromNewChat(String message, User currentUser) async {
+    Message newMessage = Message(
+      message: message,
+      type: MessageType.text,
+      senderId: currentUser.userId,
+      sentOn: DateTime.now(),
+    );
+    _chatsMap[_currentChatIdScope]!.messages.add(newMessage);
+    notifyListeners();
+    int recipientUserId = _chatsMap[_currentChatIdScope]!.recipientId!;
+    CreateChatResponse chatResponse = await chatService
+        .createNewChat(_chatsMap[_currentChatIdScope]!.recipientId!);
+    if (chatResponse.error != null) {
+      return;
+    }
+    int randomlyGeneratedChatId = _currentChatIdScope!;
+    _currentChatIdScope = chatResponse.chat!.id;
+    _chatsMap[_currentChatIdScope!] = chatResponse.chat!;
+    _chatsMap[_currentChatIdScope!]!.messages.add(newMessage);
+    _chatsMap.remove(randomlyGeneratedChatId);
+    notifyListeners();
+    socketService!.emitToNewChat(
+      chatId: _currentChatIdScope!,
+      message: message,
+      messageType: MessageType.text,
+      recipientUserId: recipientUserId,
+      chatName: currentUser.name,
+    );
+  }
+
   void sendNewMessage(String message, int currentUserId) async {
-    bool isNewChat = _currentChatIdScope! > Constants.newChatIdMin;
-    int? recipientUserId;
     Message newMessage = Message(
       message: message,
       type: MessageType.text,
@@ -81,38 +112,32 @@ class ChatProvider extends ChangeNotifier {
     );
     _chatsMap[_currentChatIdScope]!.messages.add(newMessage);
     notifyListeners();
-    if (isNewChat) {
-      recipientUserId = _chatsMap[_currentChatIdScope]!.recipientId;
-      CreateChatResponse chatResponse =
-          await chatService.createNewChat(_chatsMap[_currentChatIdScope]!.recipientId!);
-      if (chatResponse.error != null) {
-        return;
-      }
-      int randomlyGeneratedChatId = _currentChatIdScope!;
-      _currentChatIdScope = chatResponse.chat!.id;
-      _chatsMap[_currentChatIdScope!] = chatResponse.chat!;
-      _chatsMap[_currentChatIdScope!]!.messages.add(newMessage);
-      _chatsMap.remove(randomlyGeneratedChatId);
-      notifyListeners();
-    }
     socketService!.emitToChat(
       chatId: _currentChatIdScope!,
       message: message,
       messageType: MessageType.text,
-      isNewChat: isNewChat,
-      recipientUserId: recipientUserId,
     );
   }
 
-  void receiveMessageFromNewChat(Message newMessage, int chatId) async {
-    ChatGetResponse response = await chatService.fetchChat(chatId);
-    if (response.error != null) {
-      return;
-    }
-    Chat newChat = response.chat!;
-    _chatsMap[newChat.id!] = newChat;
+  void receiveMessageFromNewChat(NewChatSocketPayload payload) async {
+    Message message = Message(
+      message: payload.message,
+      type: payload.messageType,
+      senderId: payload.senderId,
+      sentOn: DateTime.now(),
+    );
+    Chat chat = Chat(
+      messages: [message],
+      name: payload.chatName,
+      id: payload.chatId,
+      createdOn: DateTime.now(),
+      updatedOn: DateTime.now(),
+    );
+    print(chat.messages);
+    _chatsMap[chat.id!] = chat;
     notifyListeners();
   }
 
   Chat? getCurrentChatScope() => _chatsMap[_currentChatIdScope];
+  int? get currentChatScopeId => _currentChatIdScope;
 }
