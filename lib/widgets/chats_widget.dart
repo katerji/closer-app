@@ -36,11 +36,9 @@ class _ChatsWidgetState extends State<ChatsWidget> {
           ? [const SizedBox.shrink()]
           : _chatProvider!
               .getChats()
-              .map(
-                (Chat chat) => ChatRowWidget(
-                  chat: chat,
-                ),
-              )
+              .entries.map((entry) => ChatRowWidget(
+                  chat: entry.value,
+              ),)
               .toList(),
     );
   }

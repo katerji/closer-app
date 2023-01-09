@@ -16,7 +16,7 @@ class ChatRowWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        context.read<ChatProvider>().setChatScope(chat);
+        context.read<ChatProvider>().setChatScope(chat.id!);
         context.push(Routes.chat.pageName);
       },
       child: Row(

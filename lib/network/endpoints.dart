@@ -5,11 +5,15 @@ class Endpoints {
   static const getContacts = 'contacts';
   static const sendInvitation = 'invitation';
   static const getInvitations = 'invitations';
+  static const createChat = 'chat';
 
   static getAcceptOrRejectInvitationEndpoint(id) {
     return 'invitation/inviter/$id';
   }
   static getDeleteSentInvitationEndpoint(id) {
     return 'invitation/user/$id';
+  }
+  static getFetchChatEndpoint(int chatId) {
+    return 'chat/$chatId';
   }
 }

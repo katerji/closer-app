@@ -13,12 +13,4 @@ class MessageService {
   MessageService._internal();
 
   SocketService socketService = SocketService();
-
-  void sendMessage(Chat chat, Message message) {
-    socketService.emitToChat(
-      chatId: chat.id,
-      message: message.message,
-      messageType: message.type,
-    );
-  }
 }

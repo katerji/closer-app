@@ -45,11 +45,18 @@ class SocketService {
     required int chatId,
     required String message,
     required MessageType messageType,
+    required bool isNewChat,
+    int? recipientUserId,
   }) {
-    socket!.emit(_messageEvent, {
+    Map <String, dynamic> socketMessage = {
       "message": message,
       "chat_id": chatId,
-      "messageType": messageType.id,
-    });
+      "message_type": messageType.id,
+      "is_new_chat": isNewChat,
+    };
+    if (recipientUserId != null) {
+      socketMessage["recipient_user_id"] = recipientUserId;
+    }
+    socket!.emit(_messageEvent, socketMessage);
   }
 }

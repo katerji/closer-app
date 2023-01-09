@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class Request {
-  static const String _baseApiUrl = 'https://70d4-31-215-92-21.in.ngrok.io/';
+  static const String _baseApiUrl = 'https://3258-31-215-92-21.in.ngrok.io/';
   static const String _apiUrl = '${_baseApiUrl}api/';
   static String? jwtToken;
   static void setJwtToken(String newJwtToken) => jwtToken = newJwtToken;

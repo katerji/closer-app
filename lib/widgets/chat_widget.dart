@@ -29,7 +29,7 @@ class _ChatWidgetState extends State<ChatWidget> {
         Container(
           height: MediaQuery.of(context).size.height * (8 / 10),
           child: ListView(
-            children: chatProvider!.currentChatScope!.messages
+            children: chatProvider!.getCurrentChatScope()!.messages
                 .map(
                   (Message message) => MessageWidget(message: message),
                 )

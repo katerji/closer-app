@@ -1,21 +1,28 @@
 import 'message.dart';
 
 class Chat {
-  final int id;
   final String name;
-  final String? description;
   final List<Message> messages;
-  final DateTime createdOn;
-  final DateTime updatedOn;
+  int? id;
+  String? description;
+  DateTime? createdOn;
+  DateTime? updatedOn;
+  //only needed when creating a new chat
+  int? recipientId;
 
-  const Chat({
-    required this.id,
-    required this.createdOn,
-    required this.updatedOn,
+  Chat({
+    this.id,
+    this.createdOn,
+    this.updatedOn,
     required this.messages,
     required this.name,
     this.description,
+    this.recipientId,
   });
+  set setId(newId) => id = newId;
+  set setDescription(String newDescription) => description = newDescription;
+  set setCreatedOn(DateTime newCreatedOn) => createdOn = newCreatedOn;
+  set setUpdatedOn(DateTime newUpdatedOn) => updatedOn = newUpdatedOn;
 
   factory Chat.fromJson(Map<String, dynamic> json) {
     return Chat(
