@@ -1,0 +1,82 @@
+{
+  "project_info": {
+    "project_number": "285106660310",
+    "project_id": "closer-5d0ca",
+    "storage_bucket": "closer-5d0ca.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:285106660310:android:b18e8969d6cb8b1c907a77",
+        "android_client_info": {
+          "package_name": "com.example.y"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "285106660310-b2qbp764prvgraqaujam4metib4lpoor.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD7cPzUkOi0HJdWTvEtYZyvMHea1HzbC6Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "285106660310-b2qbp764prvgraqaujam4metib4lpoor.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "285106660310-m1d782t5meiquvblgbqv1g0d5ctonnmm.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.katerji.closer"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:285106660310:android:eb1f70a83a4c6178907a77",
+        "android_client_info": {
+          "package_name": "com.katerji.closer"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "285106660310-b2qbp764prvgraqaujam4metib4lpoor.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD7cPzUkOi0HJdWTvEtYZyvMHea1HzbC6Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "285106660310-b2qbp764prvgraqaujam4metib4lpoor.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "285106660310-m1d782t5meiquvblgbqv1g0d5ctonnmm.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.katerji.closer"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
