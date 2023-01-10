@@ -62,7 +62,7 @@ class _ChatWidgetState extends State<ChatWidget> {
 
   void _sendNewMessage() {
     if (chatProvider!.currentChatScopeId! > Constants.newChatIdMin) {
-     chatProvider!.sendNewMessageFromNewChat(_messageController.text, context.read<AuthProvider>().loggedInUser);
+     chatProvider!.sendNewMessageFromNewChat(_messageController.text, context.read<AuthProvider>().loggedInUser!);
     } else {
       chatProvider!.sendNewMessage(
           _messageController.text, context.read<AuthProvider>().loggedInUserId, );

@@ -18,19 +18,35 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   AuthProvider? authProvider;
+  bool didAppLoad = false;
 
   @override
-  void didChangeDependencies() {
+  void didChangeDependencies() async {
     authProvider ??= context.watch<AuthProvider>();
-    if (!authProvider!.didAutoLogin()) {
-    authProvider?.autoLoginUser();
+    if (authProvider!.didAutoLogin) {
+      if (authProvider?.loggedInUser != null) {
+        context.read<ChatProvider>().setChatsFromLocalStorage();
+        Future.delayed(const Duration(seconds: 1), () {
+          setState(() {
+            didAppLoad = true;
+          });
+        });
+      } else {
+        Future.delayed(const Duration(seconds: 1), () {
+          setState(() {
+            didAppLoad = true;
+          });
+        });
+      }
+    } else {
+      authProvider?.autoLoginUser();
     }
     super.didChangeDependencies();
   }
 
   @override
   Widget build(BuildContext context) {
-    return authProvider!.isAuthing() ? splashScreen() : App();
+    return didAppLoad ? App() : splashScreen();
   }
 
   Widget splashScreen() {

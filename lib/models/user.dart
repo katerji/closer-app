@@ -9,6 +9,14 @@ class User {
     required this.name,
   });
 
+  Map<String, dynamic> toMap() {
+    return {
+      'id': userId,
+      'phone': phoneNumber,
+      'name': name
+    };
+  }
+
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
       userId: json['id'],

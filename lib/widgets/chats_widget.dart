@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:y/providers/auth_provider.dart';
 import 'package:y/providers/chat_provider.dart';
 import 'package:y/services/socket_service.dart';
+import 'package:y/utility/constants.dart';
 
 import '../models/chat.dart';
 import 'chat_row_widget.dart';
@@ -32,14 +33,17 @@ class _ChatsWidgetState extends State<ChatsWidget> {
   @override
   Widget build(BuildContext context) {
     return ListView(
-      children: _chatProvider == null
-          ? [const SizedBox.shrink()]
-          : _chatProvider!
-              .getChats()
-              .entries.map((entry) => ChatRowWidget(
-                  chat: entry.value,
-              ),)
-              .toList(),
-    );
+        children: _chatProvider == null
+            ? [const SizedBox.shrink()]
+            : _chatProvider!.getChats().entries.map(
+                (entry) {
+                  if (entry.key > Constants.newChatIdMin) {
+                    return SizedBox.shrink();
+                  }
+                  return ChatRowWidget(
+                    chat: entry.value,
+                  );
+                },
+              ).toList());
   }
 }

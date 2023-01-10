@@ -1,3 +1,4 @@
+import 'package:y/models/chat.dart';
 import 'package:y/network/responses/generic_response.dart';
 import 'package:y/utility/constants.dart';
 
@@ -6,6 +7,7 @@ import '../network/endpoints.dart';
 import '../network/request.dart';
 import '../network/responses/login_response.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
+
 class AuthService {
   static final AuthService _authService = AuthService._internal();
 
@@ -21,11 +23,21 @@ class AuthService {
         await Request.post(endpoint: Endpoints.login, body: body);
     if (response is RequestException) {
       return LoginResponse(
-          error: response.errorMessage, jwtToken: "", user: User.empty());
+        error: response.errorMessage,
+      );
     } else {
       return LoginResponse(
-          jwtToken: response['access_token'],
-          user: User.fromJson(response['user']));
+        jwtToken: response['access_token'],
+        user: User.fromJson(
+          response['user'],
+        ),
+        chats: response['chats'].map<Chat>(
+          (dynamic json) => Chat.fromJson(json),
+        ).toList(),
+        contacts: response['contacts'].map<User>(
+          (dynamic json) => User.fromJson(json),
+        ).toList(),
+      );
     }
   }
 

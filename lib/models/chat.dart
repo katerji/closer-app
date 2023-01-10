@@ -7,6 +7,7 @@ class Chat {
   String? description;
   DateTime? createdOn;
   DateTime? updatedOn;
+
   //only needed when creating a new chat
   int? recipientId;
 
@@ -19,9 +20,13 @@ class Chat {
     this.description,
     this.recipientId,
   });
+
   set setId(newId) => id = newId;
+
   set setDescription(String newDescription) => description = newDescription;
+
   set setCreatedOn(DateTime newCreatedOn) => createdOn = newCreatedOn;
+
   set setUpdatedOn(DateTime newUpdatedOn) => updatedOn = newUpdatedOn;
 
   factory Chat.fromJson(Map<String, dynamic> json) {
@@ -31,10 +36,27 @@ class Chat {
       description: json['description'],
       createdOn: DateTime.parse(json['created_at']),
       updatedOn: DateTime.parse(json['updated_at']),
-      messages: json['messages'].map<Message>(
-        (message) => Message.fromJson(message),
-      ).toList(),
+      messages: json['messages']
+          .map<Message>(
+            (message) => Message.fromJson(message),
+          )
+          .toList(),
     );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'name': name,
+      'description': description,
+      'created_at': createdOn.toString(),
+      'updated_at': updatedOn.toString(),
+      'messages': messages
+          .map(
+            (Message message) => message.toMap(),
+          )
+          .toList(),
+    };
   }
 
   String getLatestMessage() {
@@ -43,6 +65,7 @@ class Chat {
     }
     return messages[messages.length - 1].message;
   }
+
   bool isLatestMessageSentByUser(loggedInUserId) {
     if (messages.isEmpty) {
       return false;

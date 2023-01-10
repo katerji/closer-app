@@ -9,6 +9,7 @@ class ChatScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print("");
     return Scaffold(
       appBar: AppBar(
         title: Text(context.watch<ChatProvider>().getCurrentChatScope()!.name),

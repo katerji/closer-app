@@ -14,6 +14,16 @@ class Message {
     required this.sentOn,
   });
 
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'message': message,
+      'message_type': type == MessageType.text ? 1 : 2,
+      'created_at': sentOn.toString(),
+      'sender_user_id': senderId
+    };
+  }
+
   factory Message.fromJson(Map<String, dynamic> json) {
     return Message(
       id: json['id'],

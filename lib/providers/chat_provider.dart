@@ -1,10 +1,13 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:y/models/chat.dart';
 import 'package:y/models/enums/message_type_enum.dart';
 import 'package:y/models/message.dart';
 import 'package:y/network/api_request_loader.dart';
 import 'package:y/network/responses/chats_get_response.dart';
-import 'package:y/network/responses/create_chat_response.dart';
+import 'package:y/network/responses/chat_create_response.dart';
 import 'package:y/services/chat_service.dart';
 import 'package:y/services/socket_service.dart';
 import 'package:y/utility/constants.dart';
@@ -29,7 +32,7 @@ class ChatProvider extends ChangeNotifier {
     if (_didFetchChats && !forceFetch) {
       return;
     }
-    chatsRequestLoader.setLoading(true);
+    // chatsRequestLoader.setLoading(true);
     _didFetchChats = true;
     ChatsGetResponse response = await chatService.getAll();
     if (response.error != null) {
@@ -40,7 +43,13 @@ class ChatProvider extends ChangeNotifier {
         _chatsMap[chat.id!] = chat;
       }
     }
-    chatsRequestLoader.setLoading(false);
+    FlutterSecureStorage storage = const FlutterSecureStorage();
+    List<Map<String,dynamic>> chatsMap = response.chats.map((e) => e.toMap()).toList();
+    storage.write(
+      key: Constants.secureStorageChatsKey,
+      value: jsonEncode(chatsMap),
+    );
+    // chatsRequestLoader.setLoading(false);
     notifyListeners();
   }
 
@@ -83,7 +92,7 @@ class ChatProvider extends ChangeNotifier {
     _chatsMap[_currentChatIdScope]!.messages.add(newMessage);
     notifyListeners();
     int recipientUserId = _chatsMap[_currentChatIdScope]!.recipientId!;
-    CreateChatResponse chatResponse = await chatService
+    ChatCreateResponse chatResponse = await chatService
         .createNewChat(_chatsMap[_currentChatIdScope]!.recipientId!);
     if (chatResponse.error != null) {
       return;
@@ -138,6 +147,27 @@ class ChatProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  bool _didFetchFromLocalStorage = false;
+  Future<void> setChatsFromLocalStorage() async {
+    if(_didFetchFromLocalStorage){
+      return;
+    }
+    FlutterSecureStorage storage = FlutterSecureStorage();
+    String? encodedChats = await storage.read(
+        key: Constants.secureStorageChatsKey);
+    if (encodedChats == null) {
+      return;
+    }
+    List<dynamic> chatsList = jsonDecode(encodedChats);
+    for (var chatMap in chatsList) {
+      Chat chat = Chat.fromJson(chatMap);
+      _chatsMap[chat.id!] = chat;
+    }
+    _didFetchFromLocalStorage = true;
+    notifyListeners();
+  }
+
+  bool get didFetchFromLocalStorage => _didFetchFromLocalStorage;
   Chat? getCurrentChatScope() => _chatsMap[_currentChatIdScope];
   int? get currentChatScopeId => _currentChatIdScope;
 }

@@ -10,22 +10,24 @@ import '../models/user.dart';
 class ContactRowWidget extends StatelessWidget {
   final User contact;
 
-  const ContactRowWidget({required this.contact, Key? key}) : super(key: key);
+  const ContactRowWidget({
+    required this.contact,
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Chat newChat = Chat(messages: [], name: contact.name, recipientId: contact.userId);
+        Chat newChat =
+            Chat(messages: [], name: contact.name, recipientId: contact.userId,);
         context.read<ChatProvider>().setNewChatScope(newChat);
         context.push(Routes.chat.pageName);
       },
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-        Text(contact.name),
-        Text(contact.phoneNumber)
-      ],),
+        children: [Text(contact.name), Text(contact.phoneNumber)],
+      ),
     );
   }
 }

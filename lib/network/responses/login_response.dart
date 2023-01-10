@@ -1,13 +1,18 @@
+import '../../models/chat.dart';
 import '../../models/user.dart';
 
 class LoginResponse {
-  final String jwtToken;
-  final User user;
+  final String? jwtToken;
+  final User? user;
+  final List<Chat>? chats;
+  final List<User>? contacts;
   final String? error;
 
   const LoginResponse({
-    required this.jwtToken,
-    required this.user,
+    this.jwtToken,
+    this.user,
+    this.chats,
+    this.contacts,
     this.error,
   });
 }

@@ -35,6 +35,7 @@ class AppState extends State<App> {
       routerConfig: GoRouter(
         redirect: (context, state) {
           final loggedIn = authProvider?.isLoggedIn();
+          print(state.location);
           if (!loggedIn!) {
             String currentPage = state.location;
             if (Routes.allowedRoutesWithoutAuthentication.contains(currentPage)) {
