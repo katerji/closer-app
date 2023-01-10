@@ -2,7 +2,7 @@ import 'message.dart';
 
 class Chat {
   final String name;
-  final List<Message> messages;
+  List<Message> messages;
   int? id;
   String? description;
   DateTime? createdOn;

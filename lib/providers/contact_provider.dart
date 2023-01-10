@@ -1,7 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:y/network/api_request_loader.dart';
 import 'package:y/network/responses/contacts_get_response.dart';
 import 'package:y/services/contact_service.dart';
+import 'package:y/utility/constants.dart';
 import '../models/enums/invitation_actions_enum.dart';
 import '../models/user.dart';
 import '../network/responses/generic_response.dart';
@@ -10,7 +14,7 @@ import '../network/responses/invitations_get_response.dart';
 class ContactProvider extends ChangeNotifier {
   List<User> _sentInvitations = [];
   List<User> _receivedInvitations = [];
-  List<User> _contacts = [];
+  Map<int, User> _contacts = {};
   ApiRequestLoader contactsGetRequestLoader = ApiRequestLoader();
   ApiRequestLoader invitationsGetRequestLoader = ApiRequestLoader();
   ApiRequestLoader sendInvitationRequestLoader = ApiRequestLoader();
@@ -19,9 +23,8 @@ class ContactProvider extends ChangeNotifier {
   final Map<int, ApiRequestLoader> invitationsRejectRequestLoader = {};
   final Map<int, ApiRequestLoader> sentInvitationsDeleteRequestLoader = {};
 
-   bool _didFetchContacts = false;
-   bool _didFetchInvitations = false;
-
+  bool _didFetchContacts = false;
+  bool _didFetchInvitations = false;
 
   Future<void> fetchContacts({bool forceFetch = false}) async {
     if (_didFetchContacts && !forceFetch) {
@@ -34,14 +37,20 @@ class ContactProvider extends ChangeNotifier {
       notifyListeners();
       return;
     }
-    _contacts = response.contacts;
+    response.contacts.forEach((contact) {
+      if(_contacts[contact.userId] == null) {
+        _contacts[contact.userId] = contact;
+      }
+    });
     contactsGetRequestLoader.setLoading(false);
     notifyListeners();
+    _storeContacts();
   }
 
   Future<void> sendInvitation(String phoneNumber) async {
     sendInvitationRequestLoader.setLoading(true);
-    InvitationsGetResponse response = await contactService.sendInvitation(phoneNumber);
+    InvitationsGetResponse response =
+        await contactService.sendInvitation(phoneNumber);
     if (response.error != null) {
       notifyListeners();
       return;
@@ -110,10 +119,36 @@ class ContactProvider extends ChangeNotifier {
 
   List<User> receivedInvitations() => _receivedInvitations;
 
-  List<User> contacts() => _contacts;
+  Map<int, User> contacts() => _contacts;
 
   void _setInvitationsFromResponse(InvitationsGetResponse invitations) {
     _sentInvitations = invitations.sentInvitations;
     _receivedInvitations = invitations.receivedInvitations;
+  }
+
+  void setContactsFromStorage() async {
+    FlutterSecureStorage storage = FlutterSecureStorage();
+    dynamic contacts =
+        await storage.read(key: Constants.secureStorageContactsKey);
+    Map<String, dynamic> contactsMap = jsonDecode(contacts);
+    Map<int, User> contactsObject = {};
+    contactsMap.forEach((key, value) {
+      contactsObject[int.parse(key)] = User.fromJson(value);
+    });
+    _contacts = contactsObject;
+    notifyListeners();
+  }
+
+  void _storeContacts() {
+    Map<int, User> contactsObject = _contacts;
+    Map<String, dynamic> contactsMap = {};
+    contactsObject.forEach((key, value) {
+      contactsMap[key.toString()] = value.toMap();
+    });
+    FlutterSecureStorage storage = FlutterSecureStorage();
+    storage.write(
+      key: Constants.secureStorageContactsKey,
+      value: jsonEncode(contactsMap),
+    );
   }
 }

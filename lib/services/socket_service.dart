@@ -42,8 +42,6 @@ class SocketService {
           data['message'] != null &&
           data['sender_user_id'] != null &&
           data['message_type'] != null) {
-        print("received");
-        print(data);
         chatProvider.receiveMessageFromNewChat(
           NewChatSocketPayload.fromJson(data),
         );
@@ -85,8 +83,6 @@ class SocketService {
       "recipient_user_id": recipientUserId,
       "chat_name": chatName,
     };
-    print(socketMessage);
-    print(SocketEvents.socketEventNewChat);
     socket!.emit(SocketEvents.socketEventNewChat, socketMessage);
   }
 }

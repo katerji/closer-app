@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:y/providers/chat_provider.dart';
+import 'package:y/providers/contact_provider.dart';
 import 'package:y/screens/chats_screen.dart';
 import 'package:y/screens/login_screen.dart';
 import 'package:y/utility/routes.dart';
@@ -25,7 +26,8 @@ class _SplashScreenState extends State<SplashScreen> {
     authProvider ??= context.watch<AuthProvider>();
     if (authProvider!.didAutoLogin) {
       if (authProvider?.loggedInUser != null) {
-        context.read<ChatProvider>().setChatsFromLocalStorage();
+        await context.read<ChatProvider>().fetchChats();
+        context.read<ContactProvider>().setContactsFromStorage();
         Future.delayed(const Duration(seconds: 1), () {
           setState(() {
             didAppLoad = true;

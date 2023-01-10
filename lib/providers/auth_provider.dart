@@ -5,6 +5,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:y/network/api_request_loader.dart';
 import 'package:y/network/responses/generic_response.dart';
+import 'package:y/providers/chat_provider.dart';
 import 'package:y/services/auth_service.dart';
 import 'package:y/utility/constants.dart';
 import 'package:y/network/request.dart';
@@ -25,7 +26,7 @@ class AuthProvider extends ChangeNotifier {
   ApiRequestLoader loginRequestLoader = ApiRequestLoader();
   ApiRequestLoader registerRequestLoader = ApiRequestLoader();
 
-  Future<void> login(String phoneNumber, String password) async {
+  Future<void> login(String phoneNumber, String password, ChatProvider chatProvider) async {
     loginRequestLoader.setLoading(true);
     AuthService authService = AuthService();
     LoginResponse response = await authService.login(phoneNumber, password);
@@ -46,30 +47,20 @@ class AuthProvider extends ChangeNotifier {
       value: jsonEncode(userLoginInfo),
     );
     Request.setJwtToken(response.jwtToken!);
+    await chatProvider.setChatsFromLogin(response.chats!);
     print(response.jwtToken);
     _currentUser = response.user;
-    await _setChatsInStorage(response.chats!);
     await _setContactsInStorage(response.contacts!);
     notifyListeners();
   }
 
-  Future<void> _setChatsInStorage(List<Chat> chats) async {
-    FlutterSecureStorage storage = const FlutterSecureStorage();
-    List<Map<String, dynamic>> chatsList = [];
-    if (chats.isNotEmpty) {
-      chatsList = chats.map((Chat chat) => chat.toMap()).toList();
-    }
-    await storage.write(
-      key: Constants.secureStorageChatsKey,
-      value: jsonEncode(chatsList),
-    );
-  }
-
   Future<void> _setContactsInStorage(List<User> contacts) async {
     FlutterSecureStorage storage = const FlutterSecureStorage();
-    List<Map<String, dynamic>> contactsList = [];
+    Map<String, dynamic> contactsList = {};
     if (contacts.isNotEmpty) {
-      contactsList = contacts.map((User user) => user.toMap()).toList();
+      for (var contact in contacts) {
+        contactsList[contact.userId.toString()] = contact.toMap();
+      }
     }
     await storage.write(
       key: Constants.secureStorageContactsKey,
@@ -129,10 +120,6 @@ class AuthProvider extends ChangeNotifier {
     FlutterSecureStorage storage = FlutterSecureStorage();
     await storage.write(
       key: Constants.secureStorageUserLoginInfoKey,
-      value: null,
-    );
-    await storage.write(
-      key: Constants.secureStorageChatsKey,
       value: null,
     );
     await storage.write(

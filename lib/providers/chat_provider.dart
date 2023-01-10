@@ -28,28 +28,20 @@ class ChatProvider extends ChangeNotifier {
 
   void setSocketService(SocketService service) => socketService = service;
 
-  void fetchChats({bool forceFetch = false}) async {
+  Future<void> fetchChats({bool forceFetch = false}) async {
     if (_didFetchChats && !forceFetch) {
       return;
     }
-    // chatsRequestLoader.setLoading(true);
+    chatsRequestLoader.setLoading(true);
     _didFetchChats = true;
     ChatsGetResponse response = await chatService.getAll();
     if (response.error != null) {
       return;
     }
     for (var chat in response.chats) {
-      {
-        _chatsMap[chat.id!] = chat;
-      }
+      _chatsMap[chat.id!] = chat;
     }
-    FlutterSecureStorage storage = const FlutterSecureStorage();
-    List<Map<String,dynamic>> chatsMap = response.chats.map((e) => e.toMap()).toList();
-    storage.write(
-      key: Constants.secureStorageChatsKey,
-      value: jsonEncode(chatsMap),
-    );
-    // chatsRequestLoader.setLoading(false);
+    chatsRequestLoader.setLoading(false);
     notifyListeners();
   }
 
@@ -142,32 +134,21 @@ class ChatProvider extends ChangeNotifier {
       createdOn: DateTime.now(),
       updatedOn: DateTime.now(),
     );
-    print(chat.messages);
     _chatsMap[chat.id!] = chat;
     notifyListeners();
   }
 
-  bool _didFetchFromLocalStorage = false;
-  Future<void> setChatsFromLocalStorage() async {
-    if(_didFetchFromLocalStorage){
+  Future<void> setChatsFromLogin(List<Chat> chats) async {
+    if (chats.isEmpty) {
       return;
     }
-    FlutterSecureStorage storage = FlutterSecureStorage();
-    String? encodedChats = await storage.read(
-        key: Constants.secureStorageChatsKey);
-    if (encodedChats == null) {
-      return;
-    }
-    List<dynamic> chatsList = jsonDecode(encodedChats);
-    for (var chatMap in chatsList) {
-      Chat chat = Chat.fromJson(chatMap);
+    for (var chat in chats) {
       _chatsMap[chat.id!] = chat;
     }
-    _didFetchFromLocalStorage = true;
     notifyListeners();
   }
 
-  bool get didFetchFromLocalStorage => _didFetchFromLocalStorage;
   Chat? getCurrentChatScope() => _chatsMap[_currentChatIdScope];
+
   int? get currentChatScopeId => _currentChatIdScope;
 }

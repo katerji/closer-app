@@ -27,11 +27,12 @@ class _ContactsWidgetState extends State<ContactsWidget> {
     return ListView(
       children: _contactProvider!
           .contacts()
+          .entries
           .map(
-            (User user) => ContactRowWidget(
-          contact: user,
-        ),
-      )
+            (object) => ContactRowWidget(
+              contact: object.value,
+            ),
+          )
           .toList(),
     );
   }

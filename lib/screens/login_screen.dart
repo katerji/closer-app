@@ -71,11 +71,7 @@ class LoginScreenState extends State<LoginScreen> {
                     );
                   }
                   authProvider!.login(
-                      phoneNumberController.text, passwordController.text);
-                  // if (!mounted) return;
-                  // if (authProvider.isLoggedIn()) {
-                  //   context.go(Routes.chats.pageName);
-                  // }
+                      phoneNumberController.text, passwordController.text, context.read<ChatProvider>());
                 },
                 child: const Text('Login'),
               ),

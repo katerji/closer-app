@@ -2,37 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:y/providers/auth_provider.dart';
-import 'package:y/providers/chat_provider.dart';
 import 'package:y/utility/routes.dart';
-
-import '../models/chat.dart';
 import '../widgets/chats_widget.dart';
 
-class ChatsScreen extends StatefulWidget {
+class ChatsScreen extends StatelessWidget {
   const ChatsScreen({super.key});
-
-  @override
-  ChatsScreenState createState() {
-    return ChatsScreenState();
-  }
-}
-
-class ChatsScreenState extends State<ChatsScreen> {
-  ChatProvider? chatsProvider;
-
-  @override
-  void didChangeDependencies() {
-    chatsProvider ??= context.watch<ChatProvider>();
-    if(!chatsProvider!.didFetchChats()) {
-      print("fetchig");
-      chatsProvider!.fetchChats();
-    }
-    super.didChangeDependencies();
-  }
-
-  void _logout() async {
-    context.read<AuthProvider>().logout();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +36,9 @@ class ChatsScreenState extends State<ChatsScreen> {
           ),
           TextButton(
             child: Text("logout"),
-            onPressed: _logout,
+            onPressed: () {
+              context.read<AuthProvider>().logout();
+            },
             style: TextButton.styleFrom(
               foregroundColor: Colors.white,
             ),
