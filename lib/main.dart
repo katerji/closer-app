@@ -5,6 +5,7 @@
 // ignore_for_file: public_member_api_docs
 
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
@@ -240,11 +241,13 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  // String imageUrl1 =
+  // String imageUrl =
   //     'https://closer-media.s3.eu-west-1.amazonaws.com/1/1/1673782139.jpg?response-content-disposition=inline&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEKr%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCmFwLXNvdXRoLTEiRzBFAiBiZlg2zVpLQXK5ZOhty6eHQ83THEYuBe73XyN78SsTOAIhAIV9SLfesu%2FyZ8Anga6uv18Y%2FpNRJWElysbqws%2FKWMuLKuQCCBMQABoMMTEzNDg3MDc1MzY0IgyBdfUc3lZy3lvq2a8qwQKRSgWbQyySlXg%2FQBmdx8A08zk5Il%2FKg%2FJ8xbrfa138SKrXgP4ML6XuzTj166WJc9ERELotgG%2Fo8ZHdKyOf5Wr3k5U59q7yS572BJxvyXWXvqEtkpi1IRpraVQxDrzBWcy8zgAh2TeiWj61RABk%2Fbv4NVguExwEJqlFpAl0pABdPcHO%2BIc0nRmteknW40hywKBHh0G0z3Yg9JG4gURGmPuE4zzHgXNwEJub46uaTzS9Vnj0%2BAUzuKQbNVySwer09RO2paEcBuKT5RuZA1j7X8X1SE1peeZPm%2FfNJGp4baXsgaKrN27Lg18Yxj6FNAB6xqVHtQ%2Bw%2FcRqud5TcMtLR6KffHEnZx0ZlFMMAMr5%2BiMhYEZqSRqA3rzp9%2B0LhPuBhB2XwG7mGCO%2FRYXFnH2xvIRJl8txzrAB28%2Bjr%2BcAQIhAx0Iwo6GPngY6swJg5wAebnCgkE%2FhgmO6c0Cr0UqX9J8PyLmYEqrfMKlrDryxy5kZtmX1fBpyNXxlT9CYPCzy7qskkgjfhstEs5sUAzPv5gZba6DJHduB2WGsWq0%2F3mKIKZ%2BjgyYph9eqyp7%2BSgIUlstRTvWF6dOPXF0EWMyv7hsFZOqliI5gxh5AobPOf7DuHefiEtpbxFBEJk6mnJdQSdbkAAyOPbyExGg2HHnJ%2BaHyLn889qx84AXicHH%2BSqakCuNJz%2F%2BwkZJhwu56bh7dwG4NtdqDis5MuSnK6hL%2FvLBZ%2FwdiWMYIcDHrZlIN4lP2H8S4kdzhxda6BWTtjf3rTQs8PPMhzwc8B%2Bt2qA7IhVlEY0X2tc39RCvTZX67AANjuGHxFqVabDqTrytJ%2FUF5Ob1Q55SCBm%2Fnhx1r5hi5&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20230115T112918Z&X-Amz-SignedHeaders=host&X-Amz-Expires=43199&X-Amz-Credential=ASIARU3C3LASOUO2C5UG%2F20230115%2Feu-west-1%2Fs3%2Faws4_request&X-Amz-Signature=50d870911e8ea8c4b79ad288c1feb363c3c6eff9ba9da48cc6f77b667b67f830';
+  // String imageUrl =
+  //     'https://closer-media.s3.eu-west-1.amazonaws.com/1/1/1673784410.png?response-content-disposition=inline&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEKr%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCmFwLXNvdXRoLTEiRzBFAiBiZlg2zVpLQXK5ZOhty6eHQ83THEYuBe73XyN78SsTOAIhAIV9SLfesu%2FyZ8Anga6uv18Y%2FpNRJWElysbqws%2FKWMuLKuQCCBMQABoMMTEzNDg3MDc1MzY0IgyBdfUc3lZy3lvq2a8qwQKRSgWbQyySlXg%2FQBmdx8A08zk5Il%2FKg%2FJ8xbrfa138SKrXgP4ML6XuzTj166WJc9ERELotgG%2Fo8ZHdKyOf5Wr3k5U59q7yS572BJxvyXWXvqEtkpi1IRpraVQxDrzBWcy8zgAh2TeiWj61RABk%2Fbv4NVguExwEJqlFpAl0pABdPcHO%2BIc0nRmteknW40hywKBHh0G0z3Yg9JG4gURGmPuE4zzHgXNwEJub46uaTzS9Vnj0%2BAUzuKQbNVySwer09RO2paEcBuKT5RuZA1j7X8X1SE1peeZPm%2FfNJGp4baXsgaKrN27Lg18Yxj6FNAB6xqVHtQ%2Bw%2FcRqud5TcMtLR6KffHEnZx0ZlFMMAMr5%2BiMhYEZqSRqA3rzp9%2B0LhPuBhB2XwG7mGCO%2FRYXFnH2xvIRJl8txzrAB28%2Bjr%2BcAQIhAx0Iwo6GPngY6swJg5wAebnCgkE%2FhgmO6c0Cr0UqX9J8PyLmYEqrfMKlrDryxy5kZtmX1fBpyNXxlT9CYPCzy7qskkgjfhstEs5sUAzPv5gZba6DJHduB2WGsWq0%2F3mKIKZ%2BjgyYph9eqyp7%2BSgIUlstRTvWF6dOPXF0EWMyv7hsFZOqliI5gxh5AobPOf7DuHefiEtpbxFBEJk6mnJdQSdbkAAyOPbyExGg2HHnJ%2BaHyLn889qx84AXicHH%2BSqakCuNJz%2F%2BwkZJhwu56bh7dwG4NtdqDis5MuSnK6hL%2FvLBZ%2FwdiWMYIcDHrZlIN4lP2H8S4kdzhxda6BWTtjf3rTQs8PPMhzwc8B%2Bt2qA7IhVlEY0X2tc39RCvTZX67AANjuGHxFqVabDqTrytJ%2FUF5Ob1Q55SCBm%2Fnhx1r5hi5&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20230115T120757Z&X-Amz-SignedHeaders=host&X-Amz-Expires=43200&X-Amz-Credential=ASIARU3C3LASOUO2C5UG%2F20230115%2Feu-west-1%2Fs3%2Faws4_request&X-Amz-Signature=d7f8edfe690a9879ea4ee10609974f9b36752aa92df762723c3936e48d730f2d';
   String imageUrl =
-      'https://closer-media.s3.eu-west-1.amazonaws.com/1/1/1673784410.png?response-content-disposition=inline&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEKr%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCmFwLXNvdXRoLTEiRzBFAiBiZlg2zVpLQXK5ZOhty6eHQ83THEYuBe73XyN78SsTOAIhAIV9SLfesu%2FyZ8Anga6uv18Y%2FpNRJWElysbqws%2FKWMuLKuQCCBMQABoMMTEzNDg3MDc1MzY0IgyBdfUc3lZy3lvq2a8qwQKRSgWbQyySlXg%2FQBmdx8A08zk5Il%2FKg%2FJ8xbrfa138SKrXgP4ML6XuzTj166WJc9ERELotgG%2Fo8ZHdKyOf5Wr3k5U59q7yS572BJxvyXWXvqEtkpi1IRpraVQxDrzBWcy8zgAh2TeiWj61RABk%2Fbv4NVguExwEJqlFpAl0pABdPcHO%2BIc0nRmteknW40hywKBHh0G0z3Yg9JG4gURGmPuE4zzHgXNwEJub46uaTzS9Vnj0%2BAUzuKQbNVySwer09RO2paEcBuKT5RuZA1j7X8X1SE1peeZPm%2FfNJGp4baXsgaKrN27Lg18Yxj6FNAB6xqVHtQ%2Bw%2FcRqud5TcMtLR6KffHEnZx0ZlFMMAMr5%2BiMhYEZqSRqA3rzp9%2B0LhPuBhB2XwG7mGCO%2FRYXFnH2xvIRJl8txzrAB28%2Bjr%2BcAQIhAx0Iwo6GPngY6swJg5wAebnCgkE%2FhgmO6c0Cr0UqX9J8PyLmYEqrfMKlrDryxy5kZtmX1fBpyNXxlT9CYPCzy7qskkgjfhstEs5sUAzPv5gZba6DJHduB2WGsWq0%2F3mKIKZ%2BjgyYph9eqyp7%2BSgIUlstRTvWF6dOPXF0EWMyv7hsFZOqliI5gxh5AobPOf7DuHefiEtpbxFBEJk6mnJdQSdbkAAyOPbyExGg2HHnJ%2BaHyLn889qx84AXicHH%2BSqakCuNJz%2F%2BwkZJhwu56bh7dwG4NtdqDis5MuSnK6hL%2FvLBZ%2FwdiWMYIcDHrZlIN4lP2H8S4kdzhxda6BWTtjf3rTQs8PPMhzwc8B%2Bt2qA7IhVlEY0X2tc39RCvTZX67AANjuGHxFqVabDqTrytJ%2FUF5Ob1Q55SCBm%2Fnhx1r5hi5&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20230115T120757Z&X-Amz-SignedHeaders=host&X-Amz-Expires=43200&X-Amz-Credential=ASIARU3C3LASOUO2C5UG%2F20230115%2Feu-west-1%2Fs3%2Faws4_request&X-Amz-Signature=d7f8edfe690a9879ea4ee10609974f9b36752aa92df762723c3936e48d730f2d';
-
+      'https://closer-media.s3.eu-west-1.amazonaws.com/1/1/resized-1673802765.jpg?response-content-disposition=inline&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEKr%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCmFwLXNvdXRoLTEiRzBFAiBiZlg2zVpLQXK5ZOhty6eHQ83THEYuBe73XyN78SsTOAIhAIV9SLfesu%2FyZ8Anga6uv18Y%2FpNRJWElysbqws%2FKWMuLKuQCCBMQABoMMTEzNDg3MDc1MzY0IgyBdfUc3lZy3lvq2a8qwQKRSgWbQyySlXg%2FQBmdx8A08zk5Il%2FKg%2FJ8xbrfa138SKrXgP4ML6XuzTj166WJc9ERELotgG%2Fo8ZHdKyOf5Wr3k5U59q7yS572BJxvyXWXvqEtkpi1IRpraVQxDrzBWcy8zgAh2TeiWj61RABk%2Fbv4NVguExwEJqlFpAl0pABdPcHO%2BIc0nRmteknW40hywKBHh0G0z3Yg9JG4gURGmPuE4zzHgXNwEJub46uaTzS9Vnj0%2BAUzuKQbNVySwer09RO2paEcBuKT5RuZA1j7X8X1SE1peeZPm%2FfNJGp4baXsgaKrN27Lg18Yxj6FNAB6xqVHtQ%2Bw%2FcRqud5TcMtLR6KffHEnZx0ZlFMMAMr5%2BiMhYEZqSRqA3rzp9%2B0LhPuBhB2XwG7mGCO%2FRYXFnH2xvIRJl8txzrAB28%2Bjr%2BcAQIhAx0Iwo6GPngY6swJg5wAebnCgkE%2FhgmO6c0Cr0UqX9J8PyLmYEqrfMKlrDryxy5kZtmX1fBpyNXxlT9CYPCzy7qskkgjfhstEs5sUAzPv5gZba6DJHduB2WGsWq0%2F3mKIKZ%2BjgyYph9eqyp7%2BSgIUlstRTvWF6dOPXF0EWMyv7hsFZOqliI5gxh5AobPOf7DuHefiEtpbxFBEJk6mnJdQSdbkAAyOPbyExGg2HHnJ%2BaHyLn889qx84AXicHH%2BSqakCuNJz%2F%2BwkZJhwu56bh7dwG4NtdqDis5MuSnK6hL%2FvLBZ%2FwdiWMYIcDHrZlIN4lP2H8S4kdzhxda6BWTtjf3rTQs8PPMhzwc8B%2Bt2qA7IhVlEY0X2tc39RCvTZX67AANjuGHxFqVabDqTrytJ%2FUF5Ob1Q55SCBm%2Fnhx1r5hi5&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20230115T171429Z&X-Amz-SignedHeaders=host&X-Amz-Expires=43200&X-Amz-Credential=ASIARU3C3LASOUO2C5UG%2F20230115%2Feu-west-1%2Fs3%2Faws4_request&X-Amz-Signature=a671d8b0deed5a1ac5d89ae487268aae42105d8442921f6c92a55066f02ba73a';
+  String imageBase64 = '/9j/4AAQSkZJRgABAQEAYABgAAD//gA+Q1JFQVRPUjogZ2QtanBlZyB2MS4wICh1c2luZyBJSkcgSlBFRyB2NjIpLCBkZWZhdWx0IHF1YWxpdHkK/9sAQwAIBgYHBgUIBwcHCQkICgwUDQwLCwwZEhMPFB0aHx4dGhwcICQuJyAiLCMcHCg3KSwwMTQ0NB8nOT04MjwuMzQy/9sAQwEJCQkMCwwYDQ0YMiEcITIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIy/8AAEQgAlgBkAwEiAAIRAQMRAf/EAB8AAAEFAQEBAQEBAAAAAAAAAAABAgMEBQYHCAkKC//EALUQAAIBAwMCBAMFBQQEAAABfQECAwAEEQUSITFBBhNRYQcicRQygZGhCCNCscEVUtHwJDNicoIJChYXGBkaJSYnKCkqNDU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6g4SFhoeIiYqSk5SVlpeYmZqio6Slpqeoqaqys7S1tre4ubrCw8TFxsfIycrS09TV1tfY2drh4uPk5ebn6Onq8fLz9PX29/j5+v/EAB8BAAMBAQEBAQEBAQEAAAAAAAABAgMEBQYHCAkKC//EALURAAIBAgQEAwQHBQQEAAECdwABAgMRBAUhMQYSQVEHYXETIjKBCBRCkaGxwQkjM1LwFWJy0QoWJDThJfEXGBkaJicoKSo1Njc4OTpDREVGR0hJSlNUVVZXWFlaY2RlZmdoaWpzdHV2d3h5eoKDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uLj5OXm5+jp6vLz9PX29/j5+v/aAAwDAQACEQMRAD8A8P7U2n9qZQA8dKB9403fjgg0BxvPNADz0poHHFLkEUL92gBOc0MeKX+KkfpTAO1IAD1p3amjrSATZg8GjnOCKfnmj1oAbiiiigB3amU+m0AOHSm4Bc5FKCPWkH3z9KAAoPpSKDjhqfSL0pgNywbsaVjxyKX+IUN0oEL2po607tTMZIpDH96KTBz1o55oASiiigB1Np1NoAaYgxzmk8nHRqkFLTuKxF5b9moCyDuKloouFiL94DnApSzHGRUlI3Si4C9qZkKQTT+1IKQxN6k9aXcDnmlwPQUm0DtQAUUUUAL2ptO7U2gAzzQTSgUbRTEM3GlDUu0UuBQA0MTSmlwKG6UAL2ptO7UgpDAmgdKKXtTEJRRRSGL2ptO7UlABS0UYoAMUUUUAFI3SgsO3Wms4xjvQJiuSF4pqNzg96cx+WogM0mBOSPWk3DpmgItLgDoKYxKKKKAF7UlLnim5NAAXVeDTfNz0UmlOB25NPFFwsR5kPQAU1w/97JqY0zAySOtFwsNHA96jaUq4x+NShSRmq0ilX5pK9x6WLWSR7GhV55FC42A+1KpHrRYB22kwfWnUHpTENzRTaKAFLAGjcPWkK5OaNtTqPQB8zVJTVGKWmkJgaaFANPpKYCUwoC2aeaKAEIwuKiCE96lPNAAHSiwJjFjYH75qTt1opKAGnrRS4opgLikxTqM0gAClptGaAHZpKSigBaSiigAopKUCgBcUUUUAJRRRQAlFJmimIWikpaAClpKUCgYlLilopAJRRRQAZoopKACiiigBtFFFMQtFFFADgMUtFFIYmaKKKAEooooAKKKKADNFFFAH/9k=';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -265,21 +268,22 @@ class _MyHomePageState extends State<MyHomePage> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => ImageDialog(imageUrl)),
+                  MaterialPageRoute(builder: (_) => ImageDialog(imageBase64)),
                 );
               },
               child: Container(
-                height: 250,
-                width: 200,
                 child: Align(
                   alignment: Alignment.bottomRight,
-                  child: AspectRatio(
-                    aspectRatio: 9 / 16,
-                    child: Image.network(
+                  child: ConstrainedBox(
+                    constraints: new BoxConstraints(
+                      minWidth: 150,
+                      maxWidth: 250,
+                      minHeight: 150,
+                      maxHeight: 250
+                    ),
+                    child: Image.memory(
                       fit: BoxFit.fitWidth,
-                      height: 250,
-                      width: 50,
-                      imageUrl,
+                      Base64Codec().decode(imageBase64),
                     ),
                   ),
                 ),
@@ -417,9 +421,9 @@ class AspectRatioVideoState extends State<AspectRatioVideo> {
 }
 
 class ImageDialog extends StatelessWidget {
-  final String imageUrl;
+  final String imageBlob;
 
-  ImageDialog(this.imageUrl);
+  ImageDialog(this.imageBlob);
 
   @override
   Widget build(BuildContext context) {
@@ -427,9 +431,15 @@ class ImageDialog extends StatelessWidget {
       appBar: AppBar(
         title: Text('image'),
       ),
-      body: AspectRatio(
-        aspectRatio: 9 / 16,
-        child: Image.network(imageUrl),
+      body: Align(
+        alignment: Alignment.center,
+        child: Container(
+          width: MediaQuery.of(context).size.width,
+          child: Image.memory(
+            Base64Codec().decode(imageBlob),
+            fit: BoxFit.fill,
+          ),
+        ),
       ),
     );
   }
